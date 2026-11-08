@@ -1,0 +1,17 @@
+# Turborepo
+.turbo
+
+# Env vars
+.env*
+!.env.example
+
+.next/
+
+.font-cache/
+
+next-env.d.ts
+
+*.tsbuildinfo
+# Generated content and Cloudflare build output (were ignored at the old repo root)
+.content-collections
+.open-next
