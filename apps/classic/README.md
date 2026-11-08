@@ -45,6 +45,15 @@ The public YouTube oEmbed, thumbnail, and public Google Docs export requests use
 Classic's local API route so they can load in the editor without browser CORS
 issues. Paid generation requests go directly from the browser to their provider.
 
+## Sound effects
+
+Open **Sounds → SFX** for Wyzowl's [SFX Kit](https://github.com/wyzowl/sfx-kit),
+a CC0 collection of 320 effects. Search or filter by category, preview a sound,
+then add it at the playhead. The catalog is bundled. Each original WAV loads on
+demand from the [pinned revision](https://github.com/wyzowl/sfx-kit/tree/92780e7ab0cdfb557497a988089c47f46e8c7412)
+and is saved in project media on import. No API key is required. **Sound effects**
+and **Saved** still provide the existing Freesound views.
+
 ## Adding an extension
 
 Each extension is a tab in the editor's left panel, in its own folder:

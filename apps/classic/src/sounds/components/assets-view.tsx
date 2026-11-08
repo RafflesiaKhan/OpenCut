@@ -23,6 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { useSoundSearch } from "@/sounds/use-sound-search";
+import { SfxKitView } from "@/sfx-kit/components/assets-view";
 import { useSoundsStore } from "@/sounds/sounds-store";
 import type { SavedSound, SoundEffect } from "@/sounds/types";
 import { cn } from "@/utils/ui";
@@ -38,14 +39,21 @@ import { HugeiconsIcon } from "@hugeicons/react";
 export function SoundsView() {
 	return (
 		<div className="flex h-full flex-col">
-			<Tabs defaultValue="sound-effects" className="flex h-full flex-col">
+			<Tabs defaultValue="sfx-kit" className="flex h-full flex-col">
 				<div className="px-3 pt-4 pb-0">
 					<TabsList>
+						<TabsTrigger value="sfx-kit">SFX</TabsTrigger>
 						<TabsTrigger value="sound-effects">Sound effects</TabsTrigger>
 						<TabsTrigger value="saved">Saved</TabsTrigger>
 					</TabsList>
 				</div>
 				<Separator className="my-4" />
+				<TabsContent
+					value="sfx-kit"
+					className="mt-0 flex min-h-0 flex-1 flex-col px-3 pb-3"
+				>
+					<SfxKitView />
+				</TabsContent>
 				<TabsContent
 					value="sound-effects"
 					className="mt-0 flex min-h-0 flex-1 flex-col p-5 pt-0"
