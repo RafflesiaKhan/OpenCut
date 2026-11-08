@@ -1,5 +1,8 @@
 "use client";
 
+import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
+import { Button } from "@/components/ui/button";
+
 import { useAddExtensionMedia } from "@/media/use-add-extension-media";
 import React, { useState, useEffect } from "react";
 
@@ -229,46 +232,6 @@ const MAX_CHARS = 3000;
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const s = {
-	root: {
-		fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-		fontSize: 13,
-		color: "#2c2c2c",
-		background: "#fff",
-		minHeight: "100%",
-		display: "flex",
-		flexDirection: "column" as const,
-	},
-	header: {
-		display: "flex",
-		flexWrap: "wrap" as const,
-		alignItems: "center",
-		justifyContent: "space-between",
-		padding: "12px 16px 0",
-		borderBottom: "1px solid #e8e8e8",
-	},
-	tabs: {
-		display: "flex",
-		gap: 0,
-	},
-	tab: (active: boolean): React.CSSProperties => ({
-		padding: "10px 14px",
-		fontSize: 13,
-		fontWeight: active ? 600 : 400,
-		color: active ? "#7c3aed" : "#555",
-		cursor: "pointer",
-		background: "none",
-		border: "none",
-		borderBottom: active ? "2px solid #7c3aed" : "2px solid transparent",
-		marginBottom: -1,
-	}),
-	logo: {
-		display: "flex",
-		alignItems: "center",
-		gap: 6,
-		fontWeight: 700,
-		fontSize: 14,
-		color: "#7c3aed",
-	},
 	body: {
 		flex: 1,
 		padding: "14px 16px",
@@ -279,7 +242,7 @@ const s = {
 	label: {
 		fontSize: 12,
 		fontWeight: 600,
-		color: "#555",
+		color: "var(--muted-foreground)",
 		marginBottom: 4,
 		display: "block",
 	},
@@ -287,28 +250,30 @@ const s = {
 		width: "100%",
 		padding: "7px 10px",
 		borderRadius: 6,
-		border: "1px solid #ddd",
+		border: "1px solid var(--border)",
 		fontSize: 13,
-		background: "#fff",
-		color: "#2c2c2c",
+		background: "var(--input)",
+		color: "var(--foreground)",
 
 		cursor: "pointer",
 	},
 	input: {
 		width: "100%",
+		background: "var(--input)",
 		padding: "7px 10px",
 		borderRadius: 6,
-		border: "1px solid #ddd",
+		border: "1px solid var(--border)",
 		fontSize: 13,
-		color: "#2c2c2c",
+		color: "var(--foreground)",
 	},
 	textarea: {
 		width: "100%",
+		background: "var(--input)",
 		padding: "9px 10px",
 		borderRadius: 6,
-		border: "1px solid #ddd",
+		border: "1px solid var(--border)",
 		fontSize: 12,
-		color: "#2c2c2c",
+		color: "var(--foreground)",
 		resize: "vertical" as const,
 		minHeight: 140,
 		lineHeight: 1.5,
@@ -327,79 +292,55 @@ const s = {
 	},
 	slider: {
 		flex: 1,
-		accentColor: "#7c3aed",
+		accentColor: "var(--foreground)",
 	},
 	sliderVal: {
 		width: 32,
 		textAlign: "right" as const,
 		fontSize: 12,
-		color: "#777",
+		color: "var(--muted-foreground)",
 		fontWeight: 600,
 	},
-	btn: (variant: "primary" | "secondary" | "ghost"): React.CSSProperties => ({
-		padding: variant === "primary" ? "9px 0" : "7px 12px",
-		width: variant === "primary" ? "100%" : "auto",
-		borderRadius: 7,
-		fontSize: 13,
-		fontWeight: 600,
-		cursor: "pointer",
-		border: "none",
-		background:
-			variant === "primary"
-				? "#7c3aed"
-				: variant === "secondary"
-					? "#f3f0ff"
-					: "transparent",
-		color:
-			variant === "primary"
-				? "#fff"
-				: variant === "secondary"
-					? "#7c3aed"
-					: "#555",
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		gap: 6,
-	}),
 	btnGroup: {
 		display: "flex",
 		gap: 8,
 		flexWrap: "wrap" as const,
 	},
 	card: {
-		background: "#f8f7ff",
+		background: "var(--accent)",
 		borderRadius: 8,
 		padding: 12,
-		border: "1px solid #ede9ff",
+		border: "1px solid var(--border)",
 	},
 	error: {
-		background: "#fff0f0",
-		color: "#c0392b",
+		background: "color-mix(in srgb, var(--destructive) 8%, var(--background))",
+		color: "var(--destructive)",
 		borderRadius: 6,
 		padding: "8px 10px",
 		fontSize: 12,
-		border: "1px solid #fcc",
+		border:
+			"1px solid color-mix(in srgb, var(--destructive) 26%, var(--border))",
 	},
 	success: {
-		background: "#f0fff4",
-		color: "#27ae60",
+		background: "var(--accent)",
+		color: "var(--foreground)",
 		borderRadius: 6,
 		padding: "8px 10px",
 		fontSize: 12,
-		border: "1px solid #c3e6cb",
+		border: "1px solid var(--border)",
 	},
 	charCount: (over: boolean): React.CSSProperties => ({
 		fontSize: 11,
-		color: over ? "#c0392b" : "#999",
+		color: over ? "var(--destructive)" : "var(--muted-foreground)",
 		textAlign: "right" as const,
 		marginTop: 3,
 	}),
-	keyStatus: (saved: boolean): React.CSSProperties => ({
+	keyStatus: {
 		fontSize: 11,
-		color: saved ? "#27ae60" : "#e67e22",
+		color: "var(--muted-foreground)",
 		fontWeight: 600,
 		marginTop: 4,
-	}),
+	},
 	audioPlayer: {
 		width: "100%",
 		marginTop: 4,
@@ -409,8 +350,8 @@ const s = {
 		display: "inline-block",
 		width: 14,
 		height: 14,
-		border: "2px solid rgba(255,255,255,0.4)",
-		borderTopColor: "#fff",
+		border: "2px solid color-mix(in srgb, currentColor 35%, transparent)",
+		borderTopColor: "currentColor",
 		borderRadius: "50%",
 		animation: "opencut-extension-spin 0.7s linear infinite",
 	},
@@ -624,58 +565,45 @@ export function MurfVoiceoverView() {
 	// ── Render ────────────────────────────────────────────────────────────────
 
 	return (
-		<div
-			className="overscroll-contain opencut-murf-voiceover h-full overflow-auto"
-			style={s.root}
+		<PanelView
+			title="Murf Voiceover"
+			className="opencut-extension opencut-murf-voiceover"
+			scrollClassName="overscroll-contain"
+			contentClassName="flex min-h-full flex-col px-0"
 		>
-			<style>{`
-        @keyframes opencut-extension-spin { to { transform: rotate(360deg); } }
-        .opencut-murf-voiceover select:focus, .opencut-murf-voiceover input:focus, .opencut-murf-voiceover textarea:focus { border-color: #7c3aed !important; box-shadow: 0 0 0 2px rgba(124,58,237,0.15); }
-        .opencut-murf-voiceover button:hover:not(:disabled) { opacity: 0.88; }
-        .opencut-murf-voiceover button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .opencut-murf-voiceover audio { height: 36px; }
-      `}</style>
+			<nav
+				aria-label="Murf Voiceover views"
+				className="flex flex-wrap gap-1 border-b px-3 pb-2"
+			>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "generate"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("generate")}
+				>
+					Generate
+				</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "presets"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("presets")}
+				>
+					Presets
+				</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "settings"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("settings")}
+				>
+					Settings
+				</Button>
+			</nav>
 
-			{/* Header */}
-			<div style={s.header}>
-				<div style={s.logo}>
-					<svg
-						aria-hidden="true"
-						width="18"
-						height="18"
-						viewBox="0 0 24 24"
-						fill="#7c3aed"
-					>
-						<path d="M12 3a9 9 0 100 18A9 9 0 0012 3zm0 16.2A7.2 7.2 0 1112 4.8a7.2 7.2 0 010 14.4zm-1-11.7v7l5.25-3.5L11 7.5z" />
-					</svg>
-					Murf Voiceover
-				</div>
-				<div style={s.tabs}>
-					<button
-						type="button"
-						style={s.tab(tab === "generate")}
-						onClick={() => setTab("generate")}
-					>
-						Generate
-					</button>
-					<button
-						type="button"
-						style={s.tab(tab === "presets")}
-						onClick={() => setTab("presets")}
-					>
-						Presets
-					</button>
-					<button
-						type="button"
-						style={s.tab(tab === "settings")}
-						onClick={() => setTab("settings")}
-					>
-						Settings {!savedKey && "⚠️"}
-					</button>
-				</div>
-			</div>
-
-			{/* Body */}
 			<div style={s.body}>
 				{/* ── Settings Tab ───────────────────────────────────────── */}
 				{tab === "settings" && (
@@ -695,32 +623,47 @@ export function MurfVoiceoverView() {
 								onChange={(e) => setKeyInput(e.target.value)}
 								onKeyDown={(e) => e.key === "Enter" && saveKey()}
 							/>
-							<div style={s.keyStatus(!!savedKey)}>
+							<div style={s.keyStatus}>
 								{savedKey ? "✓ API key saved" : "No key saved yet"}
 							</div>
 						</div>
 
-						<button
-							type="button"
-							style={s.btn("primary")}
+						<Button
+							variant="default"
+							className="w-full whitespace-normal"
 							onClick={saveKey}
 							disabled={!keyInput.trim()}
 						>
 							Save Key & Go to Generate
-						</button>
+						</Button>
 
-						<div style={{ fontSize: 11, color: "#888", lineHeight: 1.6 }}>
+						<div
+							style={{
+								fontSize: 11,
+								color: "var(--muted-foreground)",
+								lineHeight: 1.6,
+							}}
+						>
 							Your key is stored locally in your browser and never sent anywhere
 							except the Murf API. Get your key at{" "}
 							<strong>murf.ai → API access</strong>.
 						</div>
-						<div style={{ fontSize: 11, color: "#888", lineHeight: 1.6 }}>
+						<div
+							style={{
+								fontSize: 11,
+								color: "var(--muted-foreground)",
+								lineHeight: 1.6,
+							}}
+						>
 							Learn more here:{" "}
 							<a
 								href="https://murf.ai/api/products/text-to-speech/Falcon"
 								target="_blank"
 								rel="noopener noreferrer"
-								style={{ color: "#7c3aed", textDecoration: "underline" }}
+								style={{
+									color: "var(--foreground)",
+									textDecoration: "underline",
+								}}
 							>
 								murf.ai/api/products/text-to-speech/Falcon
 							</a>
@@ -731,7 +674,13 @@ export function MurfVoiceoverView() {
 				{/* ── Presets Tab ────────────────────────────────────────── */}
 				{tab === "presets" && (
 					<>
-						<div style={{ fontSize: 11, color: "#888", lineHeight: 1.5 }}>
+						<div
+							style={{
+								fontSize: 11,
+								color: "var(--muted-foreground)",
+								lineHeight: 1.5,
+							}}
+						>
 							Tap a preset to load its voice settings, then switch to Generate
 							and paste your script.
 						</div>
@@ -741,8 +690,8 @@ export function MurfVoiceoverView() {
 								key={p.name}
 								onClick={() => applyPreset(p)}
 								style={{
-									background: "#fff",
-									border: "1px solid #e0d9ff",
+									background: "var(--card)",
+									border: "1px solid var(--border)",
 									borderRadius: 8,
 									padding: "10px 12px",
 									textAlign: "left" as const,
@@ -761,7 +710,11 @@ export function MurfVoiceoverView() {
 									}}
 								>
 									<span
-										style={{ fontWeight: 700, fontSize: 13, color: "#2c2c2c" }}
+										style={{
+											fontWeight: 700,
+											fontSize: 13,
+											color: "var(--foreground)",
+										}}
 									>
 										{p.name}
 									</span>
@@ -769,8 +722,8 @@ export function MurfVoiceoverView() {
 										<span
 											style={{
 												fontSize: 10,
-												background: "#7c3aed",
-												color: "#fff",
+												background: "var(--foreground)",
+												color: "var(--background)",
 												borderRadius: 4,
 												padding: "2px 6px",
 												fontWeight: 600,
@@ -781,7 +734,11 @@ export function MurfVoiceoverView() {
 									)}
 								</div>
 								{p.note && (
-									<span style={{ fontSize: 11, color: "#888" }}>{p.note}</span>
+									<span
+										style={{ fontSize: 11, color: "var(--muted-foreground)" }}
+									>
+										{p.note}
+									</span>
 								)}
 								<div
 									style={{
@@ -794,8 +751,8 @@ export function MurfVoiceoverView() {
 									<span
 										style={{
 											fontSize: 10,
-											background: "#f3f0ff",
-											color: "#7c3aed",
+											background: "var(--accent)",
+											color: "var(--foreground)",
 											borderRadius: 4,
 											padding: "2px 7px",
 										}}
@@ -806,8 +763,8 @@ export function MurfVoiceoverView() {
 										<span
 											style={{
 												fontSize: 10,
-												background: "#f0fdf4",
-												color: "#16a34a",
+												background: "var(--accent)",
+												color: "var(--foreground)",
 												borderRadius: 4,
 												padding: "2px 7px",
 											}}
@@ -819,8 +776,8 @@ export function MurfVoiceoverView() {
 										<span
 											style={{
 												fontSize: 10,
-												background: "#fefce8",
-												color: "#a16207",
+												background: "var(--accent)",
+												color: "var(--foreground)",
 												borderRadius: 4,
 												padding: "2px 7px",
 											}}
@@ -832,8 +789,8 @@ export function MurfVoiceoverView() {
 										<span
 											style={{
 												fontSize: 10,
-												background: "#fef2f2",
-												color: "#dc2626",
+												background: "var(--accent)",
+												color: "var(--foreground)",
 												borderRadius: 4,
 												padding: "2px 7px",
 											}}
@@ -856,7 +813,7 @@ export function MurfVoiceoverView() {
 							<div
 								style={{
 									display: "flex",
-									background: "#f3f0ff",
+									background: "var(--accent)",
 									borderRadius: 8,
 									padding: 3,
 									gap: 2,
@@ -883,8 +840,10 @@ export function MurfVoiceoverView() {
 											fontSize: 12,
 											fontWeight: 600,
 											cursor: "pointer",
-											background: model === m ? "#7c3aed" : "transparent",
-											color: model === m ? "#fff" : "#7c3aed",
+											background:
+												model === m ? "var(--foreground)" : "transparent",
+											color:
+												model === m ? "var(--background)" : "var(--foreground)",
 											transition: "background 0.15s",
 										}}
 									>
@@ -893,7 +852,13 @@ export function MurfVoiceoverView() {
 								))}
 							</div>
 							{isFalcon && (
-								<div style={{ fontSize: 11, color: "#888", marginTop: 4 }}>
+								<div
+									style={{
+										fontSize: 11,
+										color: "var(--muted-foreground)",
+										marginTop: 4,
+									}}
+								>
 									Falcon: newer model, faster, MONO 24kHz. Style/Pitch not
 									supported.
 								</div>
@@ -947,7 +912,11 @@ export function MurfVoiceoverView() {
 							<div>
 								<span style={s.label}>Rate (speed): {rate}</span>
 								<div style={s.sliderRow}>
-									<span style={{ fontSize: 11, color: "#aaa" }}>-50</span>
+									<span
+										style={{ fontSize: 11, color: "var(--muted-foreground)" }}
+									>
+										-50
+									</span>
 									<input
 										type="range"
 										min={-50}
@@ -957,7 +926,11 @@ export function MurfVoiceoverView() {
 										onChange={(e) => setRate(Number(e.target.value))}
 										style={s.slider}
 									/>
-									<span style={{ fontSize: 11, color: "#aaa" }}>50</span>
+									<span
+										style={{ fontSize: 11, color: "var(--muted-foreground)" }}
+									>
+										50
+									</span>
 									<span style={s.sliderVal}>{rate}</span>
 								</div>
 							</div>
@@ -968,7 +941,11 @@ export function MurfVoiceoverView() {
 							<div>
 								<span style={s.label}>Pitch: {pitch}</span>
 								<div style={s.sliderRow}>
-									<span style={{ fontSize: 11, color: "#aaa" }}>-50</span>
+									<span
+										style={{ fontSize: 11, color: "var(--muted-foreground)" }}
+									>
+										-50
+									</span>
 									<input
 										type="range"
 										min={-50}
@@ -978,7 +955,11 @@ export function MurfVoiceoverView() {
 										onChange={(e) => setPitch(Number(e.target.value))}
 										style={s.slider}
 									/>
-									<span style={{ fontSize: 11, color: "#aaa" }}>50</span>
+									<span
+										style={{ fontSize: 11, color: "var(--muted-foreground)" }}
+									>
+										50
+									</span>
 									<span style={s.sliderVal}>{pitch}</span>
 								</div>
 							</div>
@@ -989,7 +970,11 @@ export function MurfVoiceoverView() {
 							<div>
 								<span style={s.label}>Variation: {variation}</span>
 								<div style={s.sliderRow}>
-									<span style={{ fontSize: 11, color: "#aaa" }}>1</span>
+									<span
+										style={{ fontSize: 11, color: "var(--muted-foreground)" }}
+									>
+										1
+									</span>
 									<input
 										type="range"
 										min={1}
@@ -999,7 +984,11 @@ export function MurfVoiceoverView() {
 										onChange={(e) => setVariation(Number(e.target.value))}
 										style={s.slider}
 									/>
-									<span style={{ fontSize: 11, color: "#aaa" }}>5</span>
+									<span
+										style={{ fontSize: 11, color: "var(--muted-foreground)" }}
+									>
+										5
+									</span>
 									<span style={s.sliderVal}>{variation}</span>
 								</div>
 							</div>
@@ -1029,9 +1018,9 @@ export function MurfVoiceoverView() {
 						{error && <div style={s.error}>{error}</div>}
 
 						{/* Generate Button */}
-						<button
-							type="button"
-							style={s.btn("primary")}
+						<Button
+							variant="default"
+							className="w-full whitespace-normal"
 							onClick={generate}
 							disabled={generating || charOver}
 						>
@@ -1043,7 +1032,7 @@ export function MurfVoiceoverView() {
 							) : (
 								"Generate Voiceover"
 							)}
-						</button>
+						</Button>
 
 						{/* Result */}
 						{audioUrl && (
@@ -1053,7 +1042,7 @@ export function MurfVoiceoverView() {
 										fontSize: 12,
 										fontWeight: 600,
 										marginBottom: 8,
-										color: "#27ae60",
+										color: "var(--foreground)",
 									}}
 								>
 									✓ Voiceover ready
@@ -1066,21 +1055,18 @@ export function MurfVoiceoverView() {
 									style={s.audioPlayer}
 								/>
 								<div style={{ ...s.btnGroup, marginTop: 10 }}>
-									<button
-										type="button"
-										style={{ ...s.btn("primary"), flex: 1 }}
+									<Button
+										variant="default"
+										className="min-w-0 whitespace-normal"
+										style={{ flex: 1 }}
 										onClick={addToTimeline}
 										disabled={uploading}
 									>
 										{uploading ? "Adding…" : "Add to timeline"}
-									</button>
-									<button
-										type="button"
-										style={s.btn("secondary")}
-										onClick={download}
-									>
+									</Button>
+									<Button variant="outline" size="sm" onClick={download}>
 										Download MP3
-									</button>
+									</Button>
 								</div>
 								{uploadStatus && (
 									<div
@@ -1099,6 +1085,6 @@ export function MurfVoiceoverView() {
 					</>
 				)}
 			</div>
-		</div>
+		</PanelView>
 	);
 }

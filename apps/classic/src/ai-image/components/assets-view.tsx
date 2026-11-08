@@ -1,5 +1,8 @@
 "use client";
 
+import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
+import { Button } from "@/components/ui/button";
+
 import { useAddExtensionMedia } from "@/media/use-add-extension-media";
 import { extensionImageFile } from "@/media/extension-image-file";
 import {
@@ -57,43 +60,6 @@ const MAX_CHARS = 2000;
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const s = {
-	root: {
-		fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-		fontSize: 13,
-		color: "#2c2c2c",
-		background: "#fff",
-		minHeight: "100%",
-		display: "flex",
-		flexDirection: "column" as const,
-	},
-	header: {
-		display: "flex",
-		flexWrap: "wrap" as const,
-		alignItems: "center",
-		justifyContent: "space-between",
-		padding: "12px 16px 0",
-		borderBottom: "1px solid #e8e8e8",
-	},
-	logo: {
-		display: "flex",
-		alignItems: "center",
-		gap: 6,
-		fontWeight: 700,
-		fontSize: 14,
-		color: "#0ea5e9",
-	},
-	tabs: { display: "flex", flexWrap: "wrap" as const },
-	tab: (active: boolean): React.CSSProperties => ({
-		padding: "10px 12px",
-		fontSize: 12,
-		fontWeight: active ? 600 : 400,
-		color: active ? "#0ea5e9" : "#555",
-		cursor: "pointer",
-		background: "none",
-		border: "none",
-		borderBottom: active ? "2px solid #0ea5e9" : "2px solid transparent",
-		marginBottom: -1,
-	}),
 	body: {
 		flex: 1,
 		padding: "14px 16px",
@@ -104,7 +70,7 @@ const s = {
 	label: {
 		fontSize: 12,
 		fontWeight: 600,
-		color: "#555",
+		color: "var(--muted-foreground)",
 		marginBottom: 4,
 		display: "block",
 	},
@@ -112,28 +78,30 @@ const s = {
 		width: "100%",
 		padding: "7px 10px",
 		borderRadius: 6,
-		border: "1px solid #ddd",
+		border: "1px solid var(--border)",
 		fontSize: 13,
-		background: "#fff",
-		color: "#2c2c2c",
+		background: "var(--input)",
+		color: "var(--foreground)",
 
 		cursor: "pointer",
 	},
 	input: {
 		width: "100%",
+		background: "var(--input)",
 		padding: "7px 10px",
 		borderRadius: 6,
-		border: "1px solid #ddd",
+		border: "1px solid var(--border)",
 		fontSize: 13,
-		color: "#2c2c2c",
+		color: "var(--foreground)",
 	},
 	textarea: {
 		width: "100%",
+		background: "var(--input)",
 		padding: "9px 10px",
 		borderRadius: 6,
-		border: "1px solid #ddd",
+		border: "1px solid var(--border)",
 		fontSize: 12,
-		color: "#2c2c2c",
+		color: "var(--foreground)",
 		resize: "vertical" as const,
 		minHeight: 120,
 		lineHeight: 1.5,
@@ -145,59 +113,45 @@ const s = {
 		gridTemplateColumns: "1fr 1fr",
 		gap: 10,
 	},
-	btn: (variant: "primary" | "secondary"): React.CSSProperties => ({
-		padding: variant === "primary" ? "9px 0" : "7px 12px",
-		width: variant === "primary" ? "100%" : "auto",
-		borderRadius: 7,
-		fontSize: 13,
-		fontWeight: 600,
-		cursor: "pointer",
-		border: "none",
-		background: variant === "primary" ? "#0ea5e9" : "#e0f2fe",
-		color: variant === "primary" ? "#fff" : "#0369a1",
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		gap: 6,
-	}),
 	card: {
-		background: "#f0f9ff",
+		background: "var(--accent)",
 		borderRadius: 8,
 		padding: 12,
-		border: "1px solid #bae6fd",
+		border: "1px solid var(--border)",
 	},
 	error: {
-		background: "#fff0f0",
-		color: "#c0392b",
+		background: "color-mix(in srgb, var(--destructive) 8%, var(--background))",
+		color: "var(--destructive)",
 		borderRadius: 6,
 		padding: "8px 10px",
 		fontSize: 12,
-		border: "1px solid #fcc",
+		border:
+			"1px solid color-mix(in srgb, var(--destructive) 26%, var(--border))",
 	},
 	success: {
-		background: "#f0fff4",
-		color: "#27ae60",
+		background: "var(--accent)",
+		color: "var(--foreground)",
 		borderRadius: 6,
 		padding: "8px 10px",
 		fontSize: 12,
-		border: "1px solid #c3e6cb",
+		border: "1px solid var(--border)",
 	},
-	keyStatus: (saved: boolean): React.CSSProperties => ({
+	keyStatus: {
 		fontSize: 11,
-		color: saved ? "#27ae60" : "#e67e22",
+		color: "var(--muted-foreground)",
 		fontWeight: 600,
 		marginTop: 4,
-	}),
+	},
 	spinner: {
 		display: "inline-block",
 		width: 14,
 		height: 14,
-		border: "2px solid rgba(255,255,255,0.4)",
-		borderTopColor: "#fff",
+		border: "2px solid color-mix(in srgb, currentColor 35%, transparent)",
+		borderTopColor: "currentColor",
 		borderRadius: "50%",
 		animation: "opencut-extension-spin 0.7s linear infinite",
 	},
-	providerToggle: (active: boolean, color: string): React.CSSProperties => ({
+	providerToggle: (active: boolean): React.CSSProperties => ({
 		flex: 1,
 		padding: "7px 0",
 		borderRadius: 6,
@@ -205,15 +159,15 @@ const s = {
 		fontSize: 12,
 		fontWeight: 600,
 		cursor: "pointer",
-		background: active ? color : "transparent",
-		color: active ? "#fff" : color,
+		background: active ? "var(--foreground)" : "transparent",
+		color: active ? "var(--background)" : "var(--foreground)",
 		transition: "background 0.15s",
 	}),
 	toggle: (on: boolean): React.CSSProperties => ({
 		width: 36,
 		height: 20,
 		borderRadius: 10,
-		background: on ? "#0ea5e9" : "#ccc",
+		background: on ? "var(--foreground)" : "var(--muted)",
 		position: "relative",
 		cursor: "pointer",
 		border: "none",
@@ -227,7 +181,7 @@ const s = {
 		width: 16,
 		height: 16,
 		borderRadius: "50%",
-		background: "#fff",
+		background: on ? "var(--background)" : "var(--foreground)",
 		transition: "left 0.2s",
 	}),
 	toolRow: {
@@ -239,7 +193,7 @@ const s = {
 	sectionLabel: {
 		fontSize: 11,
 		fontWeight: 600,
-		color: "#aaa",
+		color: "var(--muted-foreground)",
 		textTransform: "uppercase" as const,
 		letterSpacing: 0.5,
 		marginBottom: 6,
@@ -485,53 +439,35 @@ export function AIImageView() {
 	// ── Render ────────────────────────────────────────────────────────────────
 
 	return (
-		<div
-			className="overscroll-contain opencut-ai-image h-full overflow-auto"
-			style={s.root}
+		<PanelView
+			title="AI Image"
+			className="opencut-extension opencut-ai-image"
+			scrollClassName="overscroll-contain"
+			contentClassName="flex min-h-full flex-col px-0"
 		>
-			<style>{`
-        @keyframes opencut-extension-spin { to { transform: rotate(360deg); } }
-        .opencut-ai-image select:focus, .opencut-ai-image input:focus, .opencut-ai-image textarea:focus { border-color: #0ea5e9 !important; box-shadow: 0 0 0 2px rgba(14,165,233,0.15); }
-        .opencut-ai-image button:hover:not(:disabled) { opacity: 0.88; }
-        .opencut-ai-image button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .opencut-ai-image img { display: block; }
-      `}</style>
-
-			{/* Header */}
-			<div style={s.header}>
-				<div style={s.logo}>
-					<svg
-						aria-hidden="true"
-						width="16"
-						height="16"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="#0ea5e9"
-						strokeWidth="2.5"
-					>
-						<rect x="3" y="3" width="18" height="18" rx="3" />
-						<circle cx="8.5" cy="8.5" r="1.5" />
-						<path d="M21 15l-5-5L5 21" />
-					</svg>
-					Image Generate AI
-				</div>
-				<div style={s.tabs}>
-					<button
-						type="button"
-						style={s.tab(tab === "generate")}
-						onClick={() => setTab("generate")}
-					>
-						Generate
-					</button>
-					<button
-						type="button"
-						style={s.tab(tab === "settings")}
-						onClick={() => setTab("settings")}
-					>
-						Settings {!geminiKey && !openaiKey && "⚠️"}
-					</button>
-				</div>
-			</div>
+			<nav
+				aria-label="AI Image views"
+				className="flex flex-wrap gap-1 border-b px-3 pb-2"
+			>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "generate"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("generate")}
+				>
+					Generate
+				</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "settings"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("settings")}
+				>
+					Settings
+				</Button>
+			</nav>
 
 			<div style={s.body}>
 				{/* ── Settings Tab ─────────────────────────────────────── */}
@@ -551,7 +487,7 @@ export function AIImageView() {
 								value={geminiInput}
 								onChange={(e) => setGeminiInput(e.target.value)}
 							/>
-							<div style={s.keyStatus(!!geminiKey)}>
+							<div style={s.keyStatus}>
 								{geminiKey ? "✓ Gemini key saved" : "No Gemini key"}
 							</div>
 						</div>
@@ -570,28 +506,34 @@ export function AIImageView() {
 								value={openaiInput}
 								onChange={(e) => setOpenaiInput(e.target.value)}
 							/>
-							<div style={s.keyStatus(!!openaiKey)}>
+							<div style={s.keyStatus}>
 								{openaiKey ? "✓ OpenAI key saved" : "No OpenAI key"}
 							</div>
 						</div>
 
-						<button
-							type="button"
-							style={s.btn("primary")}
+						<Button
+							variant="default"
+							className="w-full whitespace-normal"
 							onClick={saveKeys}
 							disabled={!geminiInput.trim() && !openaiInput.trim()}
 						>
 							Save Keys & Generate
-						</button>
+						</Button>
 
-						<div style={{ fontSize: 11, color: "#888", lineHeight: 1.6 }}>
+						<div
+							style={{
+								fontSize: 11,
+								color: "var(--muted-foreground)",
+								lineHeight: 1.6,
+							}}
+						>
 							Keys are stored locally in your browser only.{"\n"}
 							Get a Gemini key at{" "}
 							<a
 								href="https://aistudio.google.com/apikey"
 								target="_blank"
 								rel="noopener noreferrer"
-								style={{ color: "#0ea5e9" }}
+								style={{ color: "var(--foreground)" }}
 							>
 								aistudio.google.com/apikey
 							</a>{" "}
@@ -600,19 +542,25 @@ export function AIImageView() {
 								href="https://platform.openai.com/api-keys"
 								target="_blank"
 								rel="noopener noreferrer"
-								style={{ color: "#0ea5e9" }}
+								style={{ color: "var(--foreground)" }}
 							>
 								platform.openai.com/api-keys
 							</a>
 						</div>
 
-						<div style={{ fontSize: 11, color: "#888", lineHeight: 1.6 }}>
+						<div
+							style={{
+								fontSize: 11,
+								color: "var(--muted-foreground)",
+								lineHeight: 1.6,
+							}}
+						>
 							Gemini image generation docs:{" "}
 							<a
 								href="https://ai.google.dev/gemini-api/docs/image-generation"
 								target="_blank"
 								rel="noopener noreferrer"
-								style={{ color: "#0ea5e9" }}
+								style={{ color: "var(--foreground)" }}
 							>
 								ai.google.dev/gemini-api/docs/image-generation
 							</a>
@@ -629,7 +577,7 @@ export function AIImageView() {
 							<div
 								style={{
 									display: "flex",
-									background: "#f0f9ff",
+									background: "var(--accent)",
 									borderRadius: 8,
 									padding: 3,
 									gap: 2,
@@ -637,7 +585,7 @@ export function AIImageView() {
 							>
 								<button
 									type="button"
-									style={s.providerToggle(provider === "Gemini", "#0ea5e9")}
+									style={s.providerToggle(provider === "Gemini")}
 									onClick={() => {
 										setProvider("Gemini");
 										setImageDataUrl("");
@@ -649,7 +597,7 @@ export function AIImageView() {
 								</button>
 								<button
 									type="button"
-									style={s.providerToggle(provider === "OpenAI", "#10a37f")}
+									style={s.providerToggle(provider === "OpenAI")}
 									onClick={() => {
 										setProvider("OpenAI");
 										setImageDataUrl("");
@@ -899,7 +847,9 @@ export function AIImageView() {
 							<div
 								style={{
 									fontSize: 11,
-									color: charOver ? "#c0392b" : "#999",
+									color: charOver
+										? "var(--destructive)"
+										: "var(--muted-foreground)",
 									textAlign: "right",
 									marginTop: 3,
 								}}
@@ -910,9 +860,9 @@ export function AIImageView() {
 
 						{error && <div style={s.error}>{error}</div>}
 
-						<button
-							type="button"
-							style={s.btn("primary")}
+						<Button
+							variant="default"
+							className="w-full whitespace-normal"
 							onClick={generate}
 							disabled={generating || charOver}
 						>
@@ -923,7 +873,7 @@ export function AIImageView() {
 							) : (
 								`Generate with ${provider}`
 							)}
-						</button>
+						</Button>
 
 						{/* Result */}
 						{imageDataUrl && (
@@ -933,7 +883,7 @@ export function AIImageView() {
 										fontSize: 12,
 										fontWeight: 600,
 										marginBottom: 8,
-										color: "#0369a1",
+										color: "var(--foreground)",
 									}}
 								>
 									✓ Image ready
@@ -944,9 +894,10 @@ export function AIImageView() {
 									style={{ width: "100%", borderRadius: 6, marginBottom: 10 }}
 								/>
 								<div style={{ display: "flex", gap: 8 }}>
-									<button
-										type="button"
-										style={{ ...s.btn("primary"), flex: 1 }}
+									<Button
+										variant="default"
+										className="min-w-0 whitespace-normal"
+										style={{ flex: 1 }}
 										onClick={addToTimeline}
 										disabled={adding}
 									>
@@ -957,14 +908,10 @@ export function AIImageView() {
 										) : (
 											"Add to timeline"
 										)}
-									</button>
-									<button
-										type="button"
-										style={s.btn("secondary")}
-										onClick={download}
-									>
+									</Button>
+									<Button variant="outline" size="sm" onClick={download}>
 										Download
-									</button>
+									</Button>
 								</div>
 								{addStatus && (
 									<div
@@ -983,6 +930,6 @@ export function AIImageView() {
 					</>
 				)}
 			</div>
-		</div>
+		</PanelView>
 	);
 }

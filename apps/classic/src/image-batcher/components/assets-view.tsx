@@ -1,5 +1,8 @@
 "use client";
 
+import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
+import { Button } from "@/components/ui/button";
+
 import { useAddExtensionMedia } from "@/media/use-add-extension-media";
 import { extensionImageFile } from "@/media/extension-image-file";
 import {
@@ -139,55 +142,10 @@ function readFileDataUrl(file: File): Promise<ImageAsset> {
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
-const C = {
-	primary: "#7c3aed",
-	light: "#ede9fe",
-	text: "#4c1d95",
-	border: "#c4b5fd",
-};
-
 const s = {
-	root: {
-		fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-		fontSize: 13,
-		color: "#2c2c2c",
-		background: "#fff",
-		minHeight: "100%",
-		display: "flex",
-		flexDirection: "column" as const,
-		paddingBottom: 60,
-	},
-	header: {
-		display: "flex",
-		flexWrap: "wrap" as const,
-		alignItems: "center",
-		justifyContent: "space-between",
-		padding: "10px 14px 0",
-		borderBottom: "1px solid #e8e8e8",
-	},
-	logo: {
-		display: "flex",
-		alignItems: "center",
-		gap: 6,
-		fontWeight: 700,
-		fontSize: 14,
-		color: C.primary,
-	},
-	tabs: { display: "flex", flexWrap: "wrap" as const },
-	tab: (a: boolean): React.CSSProperties => ({
-		padding: "8px 11px",
-		fontSize: 12,
-		fontWeight: a ? 600 : 400,
-		color: a ? C.primary : "#666",
-		cursor: "pointer",
-		background: "none",
-		border: "none",
-		borderBottom: a ? `2px solid ${C.primary}` : "2px solid transparent",
-		marginBottom: -1,
-	}),
 	body: {
 		flex: 1,
-		padding: "12px 14px",
+		padding: "12px",
 		display: "flex",
 		flexDirection: "column" as const,
 		gap: 14,
@@ -196,21 +154,26 @@ const s = {
 	sectionTitle: {
 		fontSize: 11,
 		fontWeight: 700,
-		color: "#888",
+		color: "var(--muted-foreground)",
 		textTransform: "uppercase" as const,
 		letterSpacing: 0.5,
 	},
 	label: {
 		fontSize: 12,
 		fontWeight: 600,
-		color: "#444",
+		color: "var(--foreground)",
 		marginBottom: 2,
 		display: "block",
 	},
-	labelNote: { fontSize: 11, fontWeight: 400, color: "#aaa", marginLeft: 4 },
+	labelNote: {
+		fontSize: 11,
+		fontWeight: 400,
+		color: "var(--muted-foreground)",
+		marginLeft: 4,
+	},
 	segmented: {
 		display: "flex",
-		background: "#f5f3ff",
+		background: "var(--accent)",
 		borderRadius: 7,
 		padding: 2,
 		gap: 2,
@@ -223,81 +186,52 @@ const s = {
 		fontSize: 11,
 		fontWeight: a ? 600 : 400,
 		cursor: "pointer",
-		background: a ? C.primary : "transparent",
-		color: a ? "#fff" : "#666",
+		background: a ? "var(--foreground)" : "transparent",
+		color: a ? "var(--background)" : "var(--muted-foreground)",
 	}),
 	select: {
 		width: "100%",
 		padding: "6px 9px",
 		borderRadius: 6,
-		border: "1px solid #ddd",
+		border: "1px solid var(--border)",
 		fontSize: 12,
-		background: "#fff",
-		color: "#2c2c2c",
+		background: "var(--input)",
+		color: "var(--foreground)",
 		cursor: "pointer",
 	},
 	input: {
 		width: "100%",
+		background: "var(--input)",
 		padding: "6px 9px",
 		borderRadius: 6,
-		border: "1px solid #ddd",
+		border: "1px solid var(--border)",
 		fontSize: 12,
-		color: "#2c2c2c",
+		color: "var(--foreground)",
 		fontFamily: "inherit",
 	},
 	textarea: {
 		width: "100%",
+		background: "var(--input)",
 		padding: "8px 9px",
 		borderRadius: 6,
-		border: "1px solid #ddd",
+		border: "1px solid var(--border)",
 		fontSize: 12,
-		color: "#2c2c2c",
+		color: "var(--foreground)",
 		resize: "vertical" as const,
 		minHeight: 90,
 		lineHeight: 1.5,
 		fontFamily: "inherit",
 	},
 	row2: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 },
-	btn: (
-		v: "primary" | "secondary" | "ghost" | "danger",
-	): React.CSSProperties => ({
-		padding: v === "primary" ? "9px 0" : "6px 10px",
-		width: v === "primary" ? "100%" : "auto",
-		borderRadius: 7,
-		fontSize: 12,
-		fontWeight: 600,
-		cursor: "pointer",
-		border: "none",
-		background:
-			v === "primary"
-				? C.primary
-				: v === "secondary"
-					? C.light
-					: v === "danger"
-						? "#fee2e2"
-						: "transparent",
-		color:
-			v === "primary"
-				? "#fff"
-				: v === "secondary"
-					? C.text
-					: v === "danger"
-						? "#991b1b"
-						: C.primary,
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		gap: 5,
-	}),
 	dropzone: (drag: boolean): React.CSSProperties => ({
-		border: `2px dashed ${drag ? C.primary : "#ddd"}`,
+		border: `2px dashed ${drag ? "var(--foreground)" : "var(--border)"}`,
 		borderRadius: 7,
 		padding: "10px 12px",
 		textAlign: "center" as const,
 		fontSize: 11,
-		color: drag ? C.primary : "#aaa",
+		color: drag ? "var(--foreground)" : "var(--muted-foreground)",
 		cursor: "pointer",
-		background: drag ? C.light : "#fafafa",
+		background: "var(--accent)",
 		transition: "all 0.15s",
 	}),
 	imgGrid: { display: "flex", gap: 6, flexWrap: "wrap" as const },
@@ -316,8 +250,8 @@ const s = {
 		width: 16,
 		height: 16,
 		borderRadius: "50%",
-		background: "#ef4444",
-		color: "#fff",
+		background: "var(--destructive)",
+		color: "var(--destructive-foreground)",
 		border: "none",
 		cursor: "pointer",
 		fontSize: 10,
@@ -332,15 +266,11 @@ const s = {
 		gap: 8,
 		padding: "8px 10px",
 		borderRadius: 7,
-		border: `1px solid ${status === "done" ? "#c4b5fd" : status === "error" ? "#fca5a5" : status === "generating" ? "#fde68a" : "#e5e7eb"}`,
+		border: `1px solid ${status === "done" ? "var(--border)" : status === "error" ? "color-mix(in srgb, var(--destructive) 26%, var(--border))" : status === "generating" ? "var(--border)" : "var(--border)"}`,
 		background:
-			status === "done"
-				? "#faf5ff"
-				: status === "error"
-					? "#fff5f5"
-					: status === "generating"
-						? "#fffbeb"
-						: "#f9fafb",
+			status === "error"
+				? "color-mix(in srgb, var(--destructive) 8%, var(--background))"
+				: "var(--accent)",
 		marginBottom: 6,
 	}),
 	statusDot: (status: ItemStatus): React.CSSProperties => ({
@@ -351,12 +281,12 @@ const s = {
 		marginTop: 4,
 		background:
 			status === "done"
-				? "#7c3aed"
+				? "var(--foreground)"
 				: status === "error"
-					? "#ef4444"
+					? "var(--destructive)"
 					: status === "generating"
-						? "#f59e0b"
-						: "#d1d5db",
+						? "var(--ring)"
+						: "var(--muted)",
 	}),
 	thumb: {
 		width: 52,
@@ -366,29 +296,28 @@ const s = {
 		flexShrink: 0,
 	},
 	error: {
-		background: "#fef2f2",
-		color: "#991b1b",
+		background: "color-mix(in srgb, var(--destructive) 8%, var(--background))",
+		color: "var(--destructive)",
 		borderRadius: 6,
 		padding: "7px 9px",
 		fontSize: 11,
-		border: "1px solid #fca5a5",
+		border:
+			"1px solid color-mix(in srgb, var(--destructive) 26%, var(--border))",
 	},
 	info: {
-		background: C.light,
-		color: C.text,
+		background: "var(--accent)",
+		color: "var(--foreground)",
 		borderRadius: 6,
 		padding: "7px 9px",
 		fontSize: 11,
-		border: `1px solid ${C.border}`,
+		border: "1px solid var(--border)",
 	},
 	toolbar: {
-		position: "fixed" as const,
+		position: "sticky" as const,
 		bottom: 0,
-		left: 0,
-		right: 0,
 		padding: "8px 14px",
-		background: "#fff",
-		borderTop: "1px solid #e8e8e8",
+		background: "var(--card)",
+		borderTop: "1px solid var(--border)",
 		display: "flex",
 		gap: 6,
 		zIndex: 10,
@@ -397,29 +326,34 @@ const s = {
 		display: "inline-block",
 		width: 13,
 		height: 13,
-		border: "2px solid rgba(255,255,255,0.4)",
-		borderTopColor: "#fff",
+		border: "2px solid color-mix(in srgb, currentColor 35%, transparent)",
+		borderTopColor: "currentColor",
 		borderRadius: "50%",
 		animation: "opencut-extension-spin 0.7s linear infinite",
 	},
 	counter: {
 		fontSize: 11,
-		color: "#888",
+		color: "var(--muted-foreground)",
 		textAlign: "right" as const,
 		marginTop: 2,
 	},
 	gdocStatus: (ok: boolean | null): React.CSSProperties => ({
 		fontSize: 11,
 		marginTop: 3,
-		color: ok === null ? "#888" : ok ? "#059669" : "#dc2626",
+		color:
+			ok === null
+				? "var(--muted-foreground)"
+				: ok
+					? "var(--foreground)"
+					: "var(--destructive)",
 		fontWeight: 500,
 	}),
-	keyStatus: (ok: boolean): React.CSSProperties => ({
+	keyStatus: {
 		fontSize: 11,
-		color: ok ? "#059669" : "#d97706",
+		color: "var(--muted-foreground)",
 		fontWeight: 600,
 		marginTop: 3,
-	}),
+	},
 } as const;
 
 // ─── App ──────────────────────────────────────────────────────────────────────
@@ -747,61 +681,44 @@ export function ImageBatcherView() {
 	const canGenerate = !!apiKey && parsedPrompts.length > 0 && !isRunning;
 
 	return (
-		<div
-			className="overscroll-contain opencut-image-batcher h-full overflow-auto"
-			style={s.root}
+		<PanelView
+			title="Image Batcher"
+			className="opencut-extension opencut-image-batcher"
+			scrollClassName="overscroll-contain"
+			contentClassName="flex min-h-full flex-col px-0"
 		>
-			<style>{`
-        @keyframes opencut-extension-spin { to { transform: rotate(360deg); } }
-        @keyframes opencut-extension-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-        .opencut-image-batcher select:focus, .opencut-image-batcher input:focus, .opencut-image-batcher textarea:focus { border-color:${C.primary}!important; box-shadow:0 0 0 2px rgba(124,58,237,.12); }
-        .opencut-image-batcher button:hover:not(:disabled) { opacity:.86; }
-        .opencut-image-batcher button:disabled { opacity:.45; cursor:not-allowed; }
-      `}</style>
-
-			{/* ── Header ── */}
-			<div style={s.header}>
-				<div style={s.logo}>
-					<svg
-						aria-hidden="true"
-						width="15"
-						height="15"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke={C.primary}
-						strokeWidth="2.5"
-					>
-						<rect x="3" y="3" width="8" height="8" rx="1.5" />
-						<rect x="13" y="3" width="8" height="8" rx="1.5" />
-						<rect x="3" y="13" width="8" height="8" rx="1.5" />
-						<rect x="13" y="13" width="8" height="8" rx="1.5" />
-					</svg>
-					Image Batcher
-				</div>
-				<div style={s.tabs}>
-					<button
-						type="button"
-						style={s.tab(tab === "setup")}
-						onClick={() => setTab("setup")}
-					>
-						Setup
-					</button>
-					<button
-						type="button"
-						style={s.tab(tab === "queue")}
-						onClick={() => setTab("queue")}
-					>
-						Queue {queue.length > 0 && `(${doneItems.length}/${queue.length})`}
-					</button>
-					<button
-						type="button"
-						style={s.tab(tab === "settings")}
-						onClick={() => setTab("settings")}
-					>
-						{!apiKey ? "⚠️" : "⚙"}
-					</button>
-				</div>
-			</div>
+			<nav
+				aria-label="Image Batcher views"
+				className="flex flex-wrap gap-1 border-b px-3 pb-2"
+			>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "setup"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("setup")}
+				>
+					Setup
+				</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "queue"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("queue")}
+				>
+					Queue {queue.length > 0 && `(${doneItems.length}/${queue.length})`}
+				</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "settings"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("settings")}
+				>
+					Settings
+				</Button>
+			</nav>
 
 			<div style={s.body}>
 				{/* ══════════════════════════════════════════════
@@ -824,25 +741,31 @@ export function ImageBatcherView() {
 								onChange={(e) => setKeyInput(e.target.value)}
 								onKeyDown={(e) => e.key === "Enter" && saveKey()}
 							/>
-							<div style={s.keyStatus(!!apiKey)}>
+							<div style={s.keyStatus}>
 								{apiKey ? "✓ Key saved" : "No key saved"}
 							</div>
 						</div>
-						<button
-							type="button"
-							style={s.btn("primary")}
+						<Button
+							variant="default"
+							className="w-full whitespace-normal"
 							onClick={saveKey}
 							disabled={!keyInput.trim()}
 						>
 							Save Key
-						</button>
-						<div style={{ fontSize: 11, color: "#888", lineHeight: 1.7 }}>
+						</Button>
+						<div
+							style={{
+								fontSize: 11,
+								color: "var(--muted-foreground)",
+								lineHeight: 1.7,
+							}}
+						>
 							Get a key at{" "}
 							<a
 								href="https://aistudio.google.com/apikey"
 								target="_blank"
 								rel="noopener noreferrer"
-								style={{ color: C.primary }}
+								style={{ color: "var(--foreground)" }}
 							>
 								aistudio.google.com/apikey
 							</a>
@@ -865,7 +788,7 @@ export function ImageBatcherView() {
 									style={{
 										fontWeight: 400,
 										textTransform: "none" as const,
-										color: "#bbb",
+										color: "var(--muted-foreground)",
 									}}
 								>
 									optional
@@ -874,7 +797,12 @@ export function ImageBatcherView() {
 
 							{/* Presets */}
 							<select
-								style={{ ...s.select, color: guideText ? "#2c2c2c" : "#aaa" }}
+								style={{
+									...s.select,
+									color: guideText
+										? "var(--foreground)"
+										: "var(--muted-foreground)",
+								}}
 								value=""
 								onChange={(e) => {
 									const preset = GUIDE_PRESETS.find(
@@ -968,23 +896,29 @@ export function ImageBatcherView() {
 												setGdocMsg("");
 											}}
 										/>
-										<button
-											type="button"
-											style={{ ...s.btn("secondary"), flexShrink: 0 }}
+										<Button
+											variant="outline"
+											size="sm"
+											style={{ flexShrink: 0 }}
 											onClick={fetchDoc}
 											disabled={gdocFetching || !gdocUrl.trim()}
 										>
 											{gdocFetching ? (
 												<span
-													style={{ ...s.spinner, borderTopColor: C.primary }}
+													style={{
+														...s.spinner,
+														borderTopColor: "var(--foreground)",
+													}}
 												/>
 											) : (
 												"Fetch"
 											)}
-										</button>
+										</Button>
 									</div>
 									{gdocMsg && <div style={s.gdocStatus(gdocOk)}>{gdocMsg}</div>}
-									<div style={{ fontSize: 10, color: "#bbb" }}>
+									<div
+										style={{ fontSize: 10, color: "var(--muted-foreground)" }}
+									>
 										Doc must be shared as "Anyone with the link can view"
 									</div>
 								</>
@@ -1050,7 +984,7 @@ export function ImageBatcherView() {
 
 							<div style={s.counter}>
 								{parsedPrompts.length > 0 ? (
-									<span style={{ color: C.primary, fontWeight: 600 }}>
+									<span style={{ color: "var(--foreground)", fontWeight: 600 }}>
 										{parsedPrompts.length} prompt
 										{parsedPrompts.length !== 1 ? "s" : ""} detected
 									</span>
@@ -1068,7 +1002,7 @@ export function ImageBatcherView() {
 									style={{
 										fontWeight: 400,
 										textTransform: "none" as const,
-										color: "#bbb",
+										color: "var(--muted-foreground)",
 									}}
 								>
 									up to {MAX_REFS}
@@ -1112,7 +1046,11 @@ export function ImageBatcherView() {
 											addImages(e.dataTransfer.files, setSubjectRefs);
 										}}
 									>
-										<span style={{ fontSize: 18, color: "#ccc" }}>+</span>
+										<span
+											style={{ fontSize: 18, color: "var(--muted-foreground)" }}
+										>
+											+
+										</span>
 									</button>
 								)}
 							</div>
@@ -1134,7 +1072,7 @@ export function ImageBatcherView() {
 									style={{
 										fontWeight: 400,
 										textTransform: "none" as const,
-										color: "#bbb",
+										color: "var(--muted-foreground)",
 									}}
 								>
 									up to {MAX_REFS}
@@ -1178,7 +1116,11 @@ export function ImageBatcherView() {
 											addImages(e.dataTransfer.files, setStyleRefs);
 										}}
 									>
-										<span style={{ fontSize: 18, color: "#ccc" }}>+</span>
+										<span
+											style={{ fontSize: 18, color: "var(--muted-foreground)" }}
+										>
+											+
+										</span>
 									</button>
 								)}
 							</div>
@@ -1322,13 +1264,13 @@ export function ImageBatcherView() {
 									<div
 										style={{
 											...s.thumb,
-											background: "#f3f4f6",
+											background: "var(--accent)",
 											borderRadius: 5,
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "center",
 											fontSize: 10,
-											color: "#ccc",
+											color: "var(--muted-foreground)",
 										}}
 									>
 										{item.status === "generating"
@@ -1344,7 +1286,7 @@ export function ImageBatcherView() {
 									<div
 										style={{
 											fontSize: 11,
-											color: "#555",
+											color: "var(--muted-foreground)",
 											lineHeight: 1.4,
 											marginBottom: 4,
 											wordBreak: "break-word" as const,
@@ -1355,15 +1297,15 @@ export function ImageBatcherView() {
 											: item.prompt}
 									</div>
 									{item.error && (
-										<div style={{ fontSize: 10, color: "#dc2626" }}>
+										<div style={{ fontSize: 10, color: "var(--destructive)" }}>
 											{item.error}
 										</div>
 									)}
 									{item.status === "done" && (
-										<button
-											type="button"
+										<Button
+											variant="outline"
+											size="sm"
 											style={{
-												...s.btn("secondary"),
 												fontSize: 10,
 												padding: "3px 7px",
 											}}
@@ -1371,7 +1313,7 @@ export function ImageBatcherView() {
 											disabled={addingAll}
 										>
 											Add to timeline
-										</button>
+										</Button>
 									)}
 								</div>
 							</div>
@@ -1390,9 +1332,10 @@ export function ImageBatcherView() {
 						{doneItems.length > 0 && !isRunning && (
 							<>
 								<div style={{ display: "flex", gap: 8 }}>
-									<button
-										type="button"
-										style={{ ...s.btn("primary"), flex: 1 }}
+									<Button
+										variant="default"
+										className="min-w-0 whitespace-normal"
+										style={{ flex: 1 }}
 										onClick={() => addImagesToTimeline(doneItems)}
 										disabled={addingAll}
 									>
@@ -1403,14 +1346,10 @@ export function ImageBatcherView() {
 										) : (
 											`Add All ${doneItems.length} to timeline`
 										)}
-									</button>
-									<button
-										type="button"
-										style={s.btn("secondary")}
-										onClick={downloadZip}
-									>
+									</Button>
+									<Button variant="outline" size="sm" onClick={downloadZip}>
 										ZIP
-									</button>
+									</Button>
 								</div>
 							</>
 						)}
@@ -1426,7 +1365,7 @@ export function ImageBatcherView() {
 							style={{
 								flex: 1,
 								fontSize: 12,
-								color: "#888",
+								color: "var(--muted-foreground)",
 								display: "flex",
 								alignItems: "center",
 								gap: 6,
@@ -1440,29 +1379,31 @@ export function ImageBatcherView() {
 							}{" "}
 							/ {queue.length}…
 						</div>
-						<button
-							type="button"
-							style={{ ...s.btn("danger"), padding: "7px 14px" }}
+						<Button
+							variant="destructive-foreground"
+							size="sm"
+							style={{ padding: "7px 14px" }}
 							onClick={stopGeneration}
 						>
 							Stop
-						</button>
+						</Button>
 					</>
 				) : (
-					<button
-						type="button"
-						style={{ ...s.btn("primary"), flex: 1 }}
+					<Button
+						variant="default"
+						className="min-w-0 whitespace-normal"
+						style={{ flex: 1 }}
 						onClick={generateAll}
 						disabled={!canGenerate}
 					>
 						{!apiKey
-							? "Add API Key in Settings ⚙"
+							? "Add API key in Settings"
 							: parsedPrompts.length === 0
 								? "Add prompts in Setup"
 								: `Generate All  (${parsedPrompts.length} image${parsedPrompts.length !== 1 ? "s" : ""})`}
-					</button>
+					</Button>
 				)}
 			</div>
-		</div>
+		</PanelView>
 	);
 }

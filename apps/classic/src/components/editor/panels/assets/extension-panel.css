@@ -1,0 +1,39 @@
+@keyframes opencut-extension-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes opencut-extension-pulse {
+	50% {
+		opacity: 0.4;
+	}
+}
+
+.opencut-extension {
+	color-scheme: light;
+}
+
+.dark .opencut-extension {
+	color-scheme: dark;
+}
+
+.opencut-extension :is(input, textarea)::placeholder {
+	color: var(--muted-foreground);
+}
+
+.opencut-extension
+	:is(
+		input,
+		select,
+		textarea,
+		button:not([class]),
+		a:not([class])
+	):focus-visible {
+	outline: 1px solid var(--ring);
+	outline-offset: 2px;
+}
+
+.opencut-extension button:disabled {
+	opacity: 0.5;
+}

@@ -1,5 +1,7 @@
 "use client";
 
+import "./extension-panel.css";
+
 import { AIImageView } from "@/ai-image/components/assets-view";
 import { ImageBatcherView } from "@/image-batcher/components/assets-view";
 import { MurfVoiceoverView } from "@/murf-voiceover/components/assets-view";

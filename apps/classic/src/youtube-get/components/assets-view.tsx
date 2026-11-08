@@ -1,7 +1,10 @@
 "use client";
 
+import { PanelView } from "@/components/editor/panels/assets/views/base-panel";
+import { Button } from "@/components/ui/button";
+
 import { useAddExtensionMedia } from "@/media/use-add-extension-media";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -24,9 +27,6 @@ interface VideoMeta {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const STORAGE_KEY = "youtube_get_google_api_key";
-const RED = "#dc2626";
-const RED_LIGHT = "#fef2f2";
-const RED_MID = "#fecaca";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -155,43 +155,6 @@ async function fetchMetaYouTubeAPI(
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
 const s = {
-	root: {
-		fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-		fontSize: 13,
-		color: "#2c2c2c",
-		background: "#fff",
-		minHeight: "100%",
-		display: "flex",
-		flexDirection: "column" as const,
-	},
-	header: {
-		display: "flex",
-		flexWrap: "wrap" as const,
-		alignItems: "center",
-		justifyContent: "space-between",
-		padding: "12px 16px 0",
-		borderBottom: "1px solid #e8e8e8",
-	},
-	logo: {
-		display: "flex",
-		alignItems: "center",
-		gap: 6,
-		fontWeight: 700,
-		fontSize: 14,
-		color: RED,
-	},
-	tabs: { display: "flex", flexWrap: "wrap" as const },
-	tab: (active: boolean): React.CSSProperties => ({
-		padding: "10px 11px",
-		fontSize: 12,
-		fontWeight: active ? 600 : 400,
-		color: active ? RED : "#555",
-		cursor: "pointer",
-		background: "none",
-		border: "none",
-		borderBottom: active ? `2px solid ${RED}` : "2px solid transparent",
-		marginBottom: -1,
-	}),
 	body: {
 		flex: 1,
 		padding: "14px 16px",
@@ -202,77 +165,59 @@ const s = {
 	label: {
 		fontSize: 12,
 		fontWeight: 600,
-		color: "#555",
+		color: "var(--muted-foreground)",
 		marginBottom: 4,
 		display: "block",
 	},
 	input: {
 		width: "100%",
+		background: "var(--input)",
 		padding: "8px 10px",
 		borderRadius: 6,
-		border: "1px solid #ddd",
+		border: "1px solid var(--border)",
 		fontSize: 13,
-		color: "#2c2c2c",
+		color: "var(--foreground)",
 
 		fontFamily: "inherit",
 	},
-	btn: (variant: "primary" | "secondary" | "ghost"): React.CSSProperties => ({
-		padding: variant === "primary" ? "9px 0" : "7px 12px",
-		width: variant === "primary" ? "100%" : "auto",
-		borderRadius: 7,
-		fontSize: 13,
-		fontWeight: 600,
-		cursor: "pointer",
-		border: "none",
-		background:
-			variant === "primary"
-				? RED
-				: variant === "secondary"
-					? RED_LIGHT
-					: "transparent",
-		color: variant === "primary" ? "#fff" : variant === "secondary" ? RED : RED,
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-		gap: 6,
-	}),
 	error: {
-		background: "#fff0f0",
-		color: "#c0392b",
+		background: "color-mix(in srgb, var(--destructive) 8%, var(--background))",
+		color: "var(--destructive)",
 		borderRadius: 6,
 		padding: "8px 10px",
 		fontSize: 12,
-		border: "1px solid #fcc",
+		border:
+			"1px solid color-mix(in srgb, var(--destructive) 26%, var(--border))",
 	},
 	info: {
-		background: "#fffbeb",
-		color: "#92400e",
+		background: "var(--accent)",
+		color: "var(--foreground)",
 		borderRadius: 6,
 		padding: "8px 10px",
 		fontSize: 11,
-		border: "1px solid #fde68a",
+		border: "1px solid var(--border)",
 		lineHeight: 1.65,
 	},
 	success: {
-		background: "#f0fff4",
-		color: "#27ae60",
+		background: "var(--accent)",
+		color: "var(--foreground)",
 		borderRadius: 6,
 		padding: "8px 10px",
 		fontSize: 12,
-		border: "1px solid #c3e6cb",
+		border: "1px solid var(--border)",
 	},
-	keyStatus: (saved: boolean): React.CSSProperties => ({
+	keyStatus: {
 		fontSize: 11,
-		color: saved ? "#27ae60" : "#e67e22",
+		color: "var(--muted-foreground)",
 		fontWeight: 600,
 		marginTop: 4,
-	}),
+	},
 	spinner: {
 		display: "inline-block",
 		width: 14,
 		height: 14,
-		border: "2px solid rgba(255,255,255,0.4)",
-		borderTopColor: "#fff",
+		border: "2px solid color-mix(in srgb, currentColor 35%, transparent)",
+		borderTopColor: "currentColor",
 		borderRadius: "50%",
 		animation: "opencut-extension-spin 0.7s linear infinite",
 	},
@@ -281,23 +226,23 @@ const s = {
 		gap: 6,
 		alignItems: "center",
 		fontSize: 12,
-		color: "#666",
+		color: "var(--muted-foreground)",
 		flexWrap: "wrap" as const,
 	},
-	dot: { color: "#ccc", fontSize: 10 },
+	dot: { color: "var(--muted-foreground)", fontSize: 10 },
 	tag: {
 		display: "inline-block",
 		fontSize: 10,
-		background: "#f0f0f0",
-		color: "#555",
+		background: "var(--border)",
+		color: "var(--muted-foreground)",
 		borderRadius: 4,
 		padding: "2px 7px",
 		marginRight: 4,
 		marginBottom: 4,
 	},
 	cmdBox: {
-		background: "#1e1e1e",
-		color: "#d4d4d4",
+		background: "var(--input)",
+		color: "var(--foreground)",
 		borderRadius: 6,
 		padding: "10px 12px",
 		fontSize: 12,
@@ -305,7 +250,7 @@ const s = {
 		lineHeight: 1.6,
 		wordBreak: "break-all" as const,
 	},
-	divider: { borderTop: "1px solid #f0f0f0", margin: "2px 0" },
+	divider: { borderTop: "1px solid var(--border)", margin: "2px 0" },
 } as const;
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -443,58 +388,44 @@ export function YouTubeGetView() {
 	// ── Render ─────────────────────────────────────────────────────────────────
 
 	return (
-		<div
-			className="overscroll-contain opencut-youtube-get h-full overflow-auto"
-			style={s.root}
+		<PanelView
+			title="YouTube Get"
+			className="opencut-extension opencut-youtube-get"
+			scrollClassName="overscroll-contain"
+			contentClassName="flex min-h-full flex-col px-0"
 		>
-			<style>{`
-        @keyframes opencut-extension-spin { to { transform: rotate(360deg); } }
-        .opencut-youtube-get input:focus { border-color: ${RED} !important; box-shadow: 0 0 0 2px rgba(220,38,38,0.15); }
-        .opencut-youtube-get button:hover:not(:disabled) { opacity: 0.85; }
-        .opencut-youtube-get button:disabled { opacity: 0.5; cursor: not-allowed; }
-        .opencut-youtube-get ::-webkit-scrollbar { width: 5px; }
-        .opencut-youtube-get ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
-      `}</style>
-
-			{/* Header */}
-			<div style={s.header}>
-				<div style={s.logo}>
-					<svg
-						aria-hidden="true"
-						width="20"
-						height="14"
-						viewBox="0 0 20 14"
-						fill="none"
-					>
-						<rect width="20" height="14" rx="3" fill={RED} />
-						<polygon points="8,4 8,10 14,7" fill="#fff" />
-					</svg>
-					YouTube GET
-				</div>
-				<div style={s.tabs}>
-					<button
-						type="button"
-						style={s.tab(tab === "info")}
-						onClick={() => setTab("info")}
-					>
-						Info
-					</button>
-					<button
-						type="button"
-						style={s.tab(tab === "download")}
-						onClick={() => setTab("download")}
-					>
-						Download
-					</button>
-					<button
-						type="button"
-						style={s.tab(tab === "settings")}
-						onClick={() => setTab("settings")}
-					>
-						Settings
-					</button>
-				</div>
-			</div>
+			<nav
+				aria-label="YouTube Get views"
+				className="flex flex-wrap gap-1 border-b px-3 pb-2"
+			>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "info"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("info")}
+				>
+					Info
+				</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "download"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("download")}
+				>
+					Download
+				</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-pressed={tab === "settings"}
+					className="text-muted-foreground aria-pressed:bg-accent aria-pressed:text-foreground"
+					onClick={() => setTab("settings")}
+				>
+					Settings
+				</Button>
+			</nav>
 
 			<div style={s.body}>
 				{/* URL bar — always visible except settings */}
@@ -509,10 +440,10 @@ export function YouTubeGetView() {
 							onChange={(e) => setUrlInput(e.target.value)}
 							onKeyDown={(e) => e.key === "Enter" && fetchMeta()}
 						/>
-						<button
-							type="button"
+						<Button
+							variant="default"
+							className="min-w-0 whitespace-normal"
 							style={{
-								...s.btn("primary"),
 								width: "auto",
 								padding: "8px 14px",
 								flexShrink: 0,
@@ -521,7 +452,7 @@ export function YouTubeGetView() {
 							disabled={fetchingMeta || addingThumbnail || !urlInput.trim()}
 						>
 							{fetchingMeta ? <span style={s.spinner} /> : "Fetch"}
-						</button>
+						</Button>
 					</div>
 				)}
 
@@ -577,7 +508,7 @@ export function YouTubeGetView() {
 												bottom: 8,
 												right: 8,
 												background: "rgba(0,0,0,0.75)",
-												color: "#fff",
+												color: "white",
 												fontSize: 12,
 												fontWeight: 700,
 												padding: "2px 6px",
@@ -589,14 +520,14 @@ export function YouTubeGetView() {
 									)}
 								</div>
 
-								<button
-									type="button"
-									style={s.btn("primary")}
+								<Button
+									variant="default"
+									className="w-full whitespace-normal"
 									onClick={addThumbnail}
 									disabled={addingThumbnail}
 								>
 									{addingThumbnail ? "Adding…" : "Add thumbnail to timeline"}
-								</button>
+								</Button>
 								{thumbnailStatus && <div role="status">{thumbnailStatus}</div>}
 
 								{/* Title */}
@@ -605,7 +536,7 @@ export function YouTubeGetView() {
 										fontWeight: 700,
 										fontSize: 14,
 										lineHeight: 1.4,
-										color: "#111",
+										color: "var(--foreground)",
 									}}
 								>
 									{meta.title}
@@ -613,7 +544,7 @@ export function YouTubeGetView() {
 
 								{/* Meta row */}
 								<div style={s.metaRow}>
-									<span style={{ fontWeight: 600, color: "#333" }}>
+									<span style={{ fontWeight: 600, color: "var(--foreground)" }}>
 										{meta.channel}
 									</span>
 									{meta.views && (
@@ -631,7 +562,7 @@ export function YouTubeGetView() {
 									{meta.likes && (
 										<>
 											<span style={s.dot}>•</span>
-											<span>👍 {meta.likes}</span>
+											<span>{meta.likes} likes</span>
 										</>
 									)}
 								</div>
@@ -654,7 +585,7 @@ export function YouTubeGetView() {
 												style={{
 													fontSize: 12,
 													lineHeight: 1.65,
-													color: "#444",
+													color: "var(--foreground)",
 												}}
 											>
 												{descExpanded
@@ -663,10 +594,10 @@ export function YouTubeGetView() {
 														(meta.description.length > 220 ? "…" : "")}
 											</div>
 											{meta.description.length > 220 && (
-												<button
-													type="button"
+												<Button
+													variant="ghost"
+													size="sm"
 													style={{
-														...s.btn("ghost"),
 														justifyContent: "flex-start",
 														padding: "4px 0",
 														fontSize: 11,
@@ -675,7 +606,7 @@ export function YouTubeGetView() {
 													onClick={() => setDescExpanded(!descExpanded)}
 												>
 													{descExpanded ? "Show less" : "Show more"}
-												</button>
+												</Button>
 											)}
 										</div>
 									</>
@@ -695,7 +626,7 @@ export function YouTubeGetView() {
 													style={{
 														...s.tag,
 														background: "transparent",
-														color: "#aaa",
+														color: "var(--muted-foreground)",
 													}}
 												>
 													+{meta.tags.length - 20} more
@@ -705,27 +636,11 @@ export function YouTubeGetView() {
 									</div>
 								)}
 
-								<a
-									href={ytUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-									style={{
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center",
-										gap: 6,
-										padding: "8px 0",
-										borderRadius: 7,
-										background: RED_LIGHT,
-										color: RED,
-										fontSize: 13,
-										fontWeight: 600,
-										textDecoration: "none",
-										border: `1px solid ${RED_MID}`,
-									}}
-								>
-									↗ Open on YouTube
-								</a>
+								<Button asChild variant="outline" className="w-full">
+									<a href={ytUrl} target="_blank" rel="noopener noreferrer">
+										Open on YouTube ↗
+									</a>
+								</Button>
 							</>
 						)}
 					</>
@@ -754,13 +669,14 @@ export function YouTubeGetView() {
 										>
 											{ytUrl}
 										</div>
-										<button
-											type="button"
-											style={{ ...s.btn("secondary"), flexShrink: 0 }}
+										<Button
+											variant="outline"
+											size="sm"
+											style={{ flexShrink: 0 }}
 											onClick={() => copy(ytUrl, "url")}
 										>
 											{copied === "url" ? "✓" : "Copy"}
-										</button>
+										</Button>
 									</div>
 								</div>
 
@@ -780,13 +696,13 @@ export function YouTubeGetView() {
 											<span style={{ ...s.label, marginBottom: 0 }}>
 												{label}
 											</span>
-											<button
-												type="button"
-												style={s.btn("secondary")}
+											<Button
+												variant="outline"
+												size="sm"
 												onClick={() => copy(cmd, key)}
 											>
 												{copied === key ? "✓ Copied" : "Copy"}
-											</button>
+											</Button>
 										</div>
 										<div style={{ ...s.cmdBox, fontSize: 11 }}>{cmd}</div>
 									</div>
@@ -814,7 +730,9 @@ export function YouTubeGetView() {
 								style={s.label}
 							>
 								YouTube Data API Key{" "}
-								<span style={{ fontWeight: 400, color: "#aaa" }}>
+								<span
+									style={{ fontWeight: 400, color: "var(--muted-foreground)" }}
+								>
 									(optional)
 								</span>
 							</label>
@@ -827,20 +745,30 @@ export function YouTubeGetView() {
 								onChange={(e) => setKeyInput(e.target.value)}
 								onKeyDown={(e) => e.key === "Enter" && saveKey()}
 							/>
-							<div style={s.keyStatus(!!apiKey)}>
+							<div style={s.keyStatus}>
 								{apiKey
 									? "✓ Saved — full metadata via YouTube Data API v3"
 									: "No key — basic metadata via YouTube oEmbed (free, no key needed)"}
 							</div>
 						</div>
 
-						<button type="button" style={s.btn("primary")} onClick={saveKey}>
+						<Button
+							variant="default"
+							className="w-full whitespace-normal"
+							onClick={saveKey}
+						>
 							{apiKey ? "Update Key" : "Save Key"}
-						</button>
+						</Button>
 
 						<div style={s.divider} />
 
-						<div style={{ fontSize: 11, color: "#888", lineHeight: 1.8 }}>
+						<div
+							style={{
+								fontSize: 11,
+								color: "var(--muted-foreground)",
+								lineHeight: 1.8,
+							}}
+						>
 							<strong>Without key</strong> — uses YouTube oEmbed (official, no
 							auth needed). Returns title, channel, and thumbnail only.
 							<br />
@@ -855,7 +783,7 @@ export function YouTubeGetView() {
 								href="https://console.cloud.google.com/apis/library/youtube.googleapis.com"
 								target="_blank"
 								rel="noopener noreferrer"
-								style={{ color: RED }}
+								className="text-foreground underline underline-offset-2"
 							>
 								Google Cloud Console → YouTube Data API v3
 							</a>
@@ -869,6 +797,6 @@ export function YouTubeGetView() {
 					</>
 				)}
 			</div>
-		</div>
+		</PanelView>
 	);
 }
