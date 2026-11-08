@@ -45,6 +45,22 @@ The public YouTube oEmbed, thumbnail, and public Google Docs export requests use
 Classic's local API route so they can load in the editor without browser CORS
 issues. Paid generation requests go directly from the browser to their provider.
 
+## Local Voice Studio narration
+
+Run [Voice Studio](https://github.com/debpalash/VoiceStudio) on the same computer
+as Classic. Set `VOICESTUDIO_URL=http://127.0.0.1:3900` in `.env.local`, then
+restart Classic and open it at `http://localhost:3000` or its local port.
+
+In a project, open **AI Voice → Provider → Voice Studio (local)**. Open Voice Studio
+and let its local service start, then refresh the provider if needed. Pick its
+active engine or one it reports as available, choose a saved voice or the engine
+default, and enter up to 4,096 characters. Select OmniVoice explicitly to see
+designed voices. Generate, preview the WAV, then add it at the playhead.
+
+This connector uses Voice Studio's loopback speech interface and needs no API key
+for the desktop app. The script is sent only to the local service. Gemini remains
+available in the same panel.
+
 ## Sound effects
 
 Open **Sounds → SFX** for Wyzowl's [SFX Kit](https://github.com/wyzowl/sfx-kit),
