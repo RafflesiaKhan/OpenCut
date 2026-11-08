@@ -165,6 +165,11 @@ Phases run in order; each new extension reuses the pattern Phase 2 sets. No date
    - **Choose the model.** Support selectable providers and models, including OpenAI, Anthropic, and xAI (Grok). Read provider keys from a local `.env` file during development and let users configure their provider, model, and key in Settings once that page exists.
    - **Build in stages.** Start with project-aware guidance, then add editor actions and extension access. Define how users review and undo edits and how generated code is scoped before expanding the Director's ability to act on its own.
 
+7. **Brand Kit.** Add an extension for reusable design systems. Create a kit for a brand, channel, or series and select it when starting or editing a project.
+   - **What a kit can hold.** Save color palettes, fonts, subtitle styles, background music, character images, and visual style references. Save narration choices by provider, model or engine, and voice name or profile, including Gemini and local Voice Studio.
+   - **How it helps.** Make the selected kit available to the editor and its extensions so AI image and video generation can use the same characters and visual references, voiceovers can use the series' usual voices, and subtitles can follow its typography and colors. A clay-style YouTube series could keep all of these choices together in one kit.
+   - **Design to explore.** Decide where creators manage kits, how they select one for a project, and how they override its defaults for an individual video.
+
 ### Decisions so far
 
 - **Branches:** the fork's `main` always mirrors OpenCut's `main`. `my-suitable-editor` is the working main for this editor. `video-studio` stays as an old reference branch.
