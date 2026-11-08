@@ -8,3 +8,9 @@ docs/
 
 # moon runtime cache
 .moon/cache/
+
+# Leftovers from the old Next.js editor (video-studio / ai-voice branches)
+apps/web/.next/
+apps/web/.content-collections/
+apps/web/next-env.d.ts
+*.tsbuildinfo
