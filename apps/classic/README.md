@@ -27,6 +27,24 @@ docker compose up -d
 
 The editor itself works without them.
 
+## Canva extension ports
+
+Open a project and use the tabs in the left panel. Enter provider keys in each
+tab's Settings. The keys stay in browser session storage, and the two image tabs
+share a Gemini key.
+
+| Tab | What to try |
+| --- | --- |
+| Murf Voiceover | Generate with Gen2 or Falcon, preview, then add the MP3 to the timeline or download it. |
+| AI Image | Generate with Gemini or OpenAI, preview, then add or download the image. |
+| Image Batcher | Enter one prompt per line, optionally add a style guide and references, then add a single result or the full sequence at the playhead. ZIP export is also available. |
+| YouTube Get | Fetch metadata with a link or ID, add the thumbnail, or copy a `yt-dlp` command. The optional YouTube Data API key unlocks more metadata. Audio, video, and caption downloads run locally using those commands. |
+
+The panels are ported from the sibling `canva-ai-integration-tools` repository.
+The public YouTube oEmbed, thumbnail, and public Google Docs export requests use
+Classic's local API route so they can load in the editor without browser CORS
+issues. Paid generation requests go directly from the browser to their provider.
+
 ## Adding an extension
 
 Each extension is a tab in the editor's left panel, in its own folder:

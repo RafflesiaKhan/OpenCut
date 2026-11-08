@@ -1,7 +1,14 @@
 "use client";
 
+import { AIImageView } from "@/ai-image/components/assets-view";
+import { ImageBatcherView } from "@/image-batcher/components/assets-view";
+import { MurfVoiceoverView } from "@/murf-voiceover/components/assets-view";
+import { YouTubeGetView } from "@/youtube-get/components/assets-view";
 import { Separator } from "@/components/ui/separator";
-import { type Tab, useAssetsPanelStore } from "@/components/editor/panels/assets/assets-panel-store";
+import {
+	type Tab,
+	useAssetsPanelStore,
+} from "@/components/editor/panels/assets/assets-panel-store";
 import { TabBar } from "./tabbar";
 import { Captions } from "@/subtitles/components/assets-view";
 import { MediaView } from "./views/assets";
@@ -12,10 +19,20 @@ import { TextView } from "@/text/components/assets-view";
 import { EffectsView } from "@/effects/components/assets-view";
 import { VoiceView } from "@/ai-voice/components/assets-view";
 
+const extensionViews = {
+	"murf-voiceover": MurfVoiceoverView,
+	"ai-image": AIImageView,
+	"image-batcher": ImageBatcherView,
+	"youtube-get": YouTubeGetView,
+};
+
 export function AssetsPanel() {
 	const { activeTab } = useAssetsPanelStore();
 
-	const viewMap: Record<Tab, React.ReactNode> = {
+	const viewMap: Record<
+		Exclude<Tab, keyof typeof extensionViews>,
+		React.ReactNode
+	> = {
 		media: <MediaView />,
 		sounds: <SoundsView />,
 		voice: <VoiceView />,
@@ -40,7 +57,14 @@ export function AssetsPanel() {
 		<div className="panel bg-background flex h-full rounded-sm border overflow-hidden">
 			<TabBar />
 			<Separator orientation="vertical" />
-			<div className="flex-1 overflow-hidden">{viewMap[activeTab]}</div>
+			<div className="min-w-0 flex-1 overflow-hidden">
+				{activeTab in viewMap && viewMap[activeTab as keyof typeof viewMap]}
+				{Object.entries(extensionViews).map(([tab, View]) => (
+					<div className="h-full" hidden={activeTab !== tab} key={tab}>
+						<View />
+					</div>
+				))}
+			</div>
 		</div>
 	);
 }

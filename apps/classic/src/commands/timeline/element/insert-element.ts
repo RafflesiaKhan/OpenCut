@@ -22,7 +22,12 @@ import { roundMediaTime } from "@/wasm";
 
 type InsertElementPlacement =
 	| { mode: "explicit"; trackId: string }
-	| { mode: "auto"; trackType?: TrackType; insertIndex?: number };
+	| {
+			mode: "auto";
+			trackType?: TrackType;
+			insertIndex?: number;
+			preserveStartTime?: boolean;
+	  };
 
 export interface InsertElementParams {
 	element: CreateTimelineElement;
@@ -225,22 +230,36 @@ export class InsertElementCommand extends Command {
 			return null;
 		}
 
-		const placementResult = resolveTrackPlacement({
-			tracks,
-			...(placement.mode === "auto" && placement.trackType
+		const subject =
+			placement.mode === "auto" && placement.trackType
 				? { trackType: placement.trackType }
-				: { elementType: element.type }),
-			timeSpans: [
-				{
-					startTime: element.startTime,
-					duration: element.duration,
-				},
-			],
+				: { elementType: element.type };
+		const timeSpans = [
+			{ startTime: element.startTime, duration: element.duration },
+		];
+		let placementResult = resolveTrackPlacement({
+			tracks,
+			...subject,
+			timeSpans,
 			strategy:
 				placement.mode === "explicit"
 					? { type: "explicit", trackId: placement.trackId }
 					: { type: "firstAvailable" },
 		});
+		if (
+			placement.mode === "auto" &&
+			placement.preserveStartTime &&
+			placementResult?.kind === "existingTrack" &&
+			placementResult.adjustedStartTime !== undefined
+		) {
+			// The main track can snap its first clip to zero. Use an overlay to keep the requested time.
+			placementResult = resolveTrackPlacement({
+				tracks,
+				...subject,
+				timeSpans,
+				strategy: { type: "alwaysNew", position: "highest" },
+			});
+		}
 		if (!placementResult) {
 			if (placement.mode === "explicit") {
 				const targetTrack =
