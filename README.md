@@ -159,7 +159,7 @@ Phases run in order; each new extension reuses the pattern Phase 2 sets. No date
 3. **Port the Canva apps.** Murf Voiceover, AI Image, Image Batcher, YouTube Get, each as its own PR.
 4. **Asset libraries.** Background Music, Sound Effects, then Presets and templates.
 5. **Connector settings.** One place to see every connector, free or paid, and manage keys.
-6. **Director.** Add a **Director** button in the editor toolbar beside **Export** and the theme toggle. It opens a Director bar where an in-editor assistant can work with the current project throughout video creation and editing.
+6. **Director.** Add a **Director** button in the editor toolbar beside **Export** and the theme toggle. It opens a Director bar where an in-editor assistant can work with the current project throughout video creation and editing. See the [Director plan](apps/classic/DIRECTOR-PLAN.md) for the multi-channel workflow, memory, and OpenArt integration.
    - **Guide the edit.** Help develop a brief, script, storyboard, or shot list. Understand the current project, explain what is on the timeline, and suggest changes to pacing, structure, or sound.
    - **Work with project materials.** Use the editor's tools and extensions to find, create, inspect, and edit assets such as footage, images, narration, captions, and sound effects. Apply edits to the timeline and, over time, write and run project-scoped code for custom tasks and fixes.
    - **Choose the model.** Support selectable providers and models, including OpenAI, Anthropic, and xAI (Grok). Read provider keys from a local `.env` file during development and let users configure their provider, model, and key in Settings once that page exists.

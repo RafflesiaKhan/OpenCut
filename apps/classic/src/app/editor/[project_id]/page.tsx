@@ -10,6 +10,7 @@ import { AssetsPanel } from "@/components/editor/panels/assets";
 import { PropertiesPanel } from "@/components/editor/panels/properties";
 import { Timeline } from "@/timeline/components";
 import { PreviewPanel } from "@/preview/components";
+import { DirectorPanel } from "@/director/director-panel";
 import { EditorHeader } from "@/components/editor/editor-header";
 import { EditorProvider } from "@/components/providers/editor-provider";
 import { Onboarding } from "@/components/editor/onboarding";
@@ -38,15 +39,23 @@ import {
 export default function Editor() {
 	const params = useParams();
 	const projectId = params.project_id as string;
+	const [directorOpen, setDirectorOpen] = useState(false);
 
 	return (
 		<MobileGate>
 			<EditorProvider projectId={projectId}>
 				<div className="bg-background flex h-screen w-screen flex-col overflow-hidden">
 					<DegradedRendererBanner />
-					<EditorHeader />
+					<EditorHeader
+						directorOpen={directorOpen}
+						onToggleDirector={() => setDirectorOpen((open) => !open)}
+					/>
 					<div className="min-h-0 min-w-0 flex-1">
-						<EditorLayout />
+						<EditorLayout
+							projectId={projectId}
+							directorOpen={directorOpen}
+							closeDirector={() => setDirectorOpen(false)}
+						/>
 					</div>
 					<Onboarding />
 					<MigrationDialog />
@@ -78,7 +87,15 @@ function DegradedRendererBanner() {
 	);
 }
 
-function EditorLayout() {
+function EditorLayout({
+	projectId,
+	directorOpen,
+	closeDirector,
+}: {
+	projectId: string;
+	directorOpen: boolean;
+	closeDirector: () => void;
+}) {
 	usePasteMedia();
 	const { panels, setPanel } = usePanelStore();
 	const activeScene = useEditor((editor) =>
@@ -180,7 +197,14 @@ function EditorLayout() {
 						maxSize={40}
 						className="min-w-0"
 					>
-						<PropertiesPanel />
+						{!directorOpen && <PropertiesPanel />}
+						<div className="h-full" hidden={!directorOpen}>
+							<DirectorPanel
+								key={projectId}
+								projectId={projectId}
+								onClose={closeDirector}
+							/>
+						</div>
 					</ResizablePanel>
 				</ResizablePanelGroup>
 			</ResizablePanel>
