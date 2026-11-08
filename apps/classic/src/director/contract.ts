@@ -20,6 +20,8 @@ const clipSchema = z.object({
 });
 
 export const directorRequestSchema = z.object({
+	provider: z.enum(["openai", "anthropic", "xai"]),
+	model: label,
 	question: z.string().trim().min(1).max(2000),
 	history: z
 		.array(
@@ -42,7 +44,12 @@ export const directorRequestSchema = z.object({
 	}),
 });
 
+export const directorUsageSchema = z.object({
+	input_tokens: z.number().int().nonnegative(),
+	output_tokens: z.number().int().nonnegative(),
+});
 export const directorReplySchema = z.object({
+	usage: directorUsageSchema.optional(),
 	answer: z.string().trim().min(1).max(10000),
 	clipIds: z.array(label),
 });

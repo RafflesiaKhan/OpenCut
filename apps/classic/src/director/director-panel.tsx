@@ -13,7 +13,13 @@ import {
 	directorReplySchema,
 	type DirectorBrand,
 	type DirectorProject,
+	type DirectorReply,
 } from "./contract";
+import {
+	directorModelPrice,
+	directorModels,
+	directorProviders,
+} from "./models";
 import { readDirectorProject, sceneTracks } from "./project-context";
 
 type Brand = DirectorBrand & { id: string };
@@ -23,7 +29,10 @@ type Turn = {
 	answer: string;
 	sceneId: string;
 	clips: DirectorProject["clips"];
+	model: string;
+	usage: DirectorReply["usage"];
 };
+const modelStorageKey = "opencut-director-model";
 const brandStorageKey = "opencut-director-brands";
 const emptyBrand = { channel: "", series: "", notes: "" };
 const brandSchema = directorBrandSchema.extend({
@@ -72,6 +81,10 @@ export function DirectorPanel({
 	const [brands, setBrands] = useState<Brand[]>([]);
 	const [activeId, setActiveId] = useState("");
 	const [draft, setDraft] = useState<DirectorBrand>(emptyBrand);
+	const [model, setModel] = useState<(typeof directorModels)[number]>(
+		directorModels[0],
+	);
+	const provider = directorProviders[model.provider];
 	const [question, setQuestion] = useState("");
 	const [turns, setTurns] = useState<Turn[]>([]);
 	const [sending, setSending] = useState(false);
@@ -83,6 +96,10 @@ export function DirectorPanel({
 
 	useEffect(() => {
 		try {
+			const savedModel = localStorage.getItem(modelStorageKey);
+			setModel(
+				directorModels.find(({ id }) => id === savedModel) ?? directorModels[0],
+			);
 			const saved = readBrands();
 			const selected = saved.find(
 				({ id }) => id === localStorage.getItem(projectBrandKey),
@@ -99,6 +116,17 @@ export function DirectorPanel({
 	useEffect(() => {
 		if (turns.length) threadEnd.current?.scrollIntoView({ block: "nearest" });
 	}, [turns]);
+
+	const chooseModel = (choice: (typeof directorModels)[number] | undefined) => {
+		if (!choice) return;
+		setModel(choice);
+		setError("");
+		try {
+			localStorage.setItem(modelStorageKey, choice.id);
+		} catch {
+			// The selected model is still usable for the current session.
+		}
+	};
 
 	const selectBrand = (id: string) => {
 		try {
@@ -157,6 +185,8 @@ export function DirectorPanel({
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					question: text,
+					provider: model.provider,
+					model: model.id,
 					history: turns.slice(-6).map(({ question, answer }) => ({
 						question,
 						answer: answer.slice(0, 4000),
@@ -183,6 +213,8 @@ export function DirectorPanel({
 						id,
 						question: text,
 						answer: reply.answer,
+						model: model.label,
+						usage: reply.usage,
 						sceneId: scene.id,
 						clips: project.clips.filter(({ id }) => ids.has(id)),
 					},
@@ -241,6 +273,70 @@ export function DirectorPanel({
 							? ` · ${activeBrand.channel} / ${activeBrand.series}`
 							: ""}
 					</p>
+					<details className="rounded-md border p-2">
+						<summary className="cursor-pointer text-sm">
+							Provider and model
+						</summary>
+						<fieldset
+							disabled={sending}
+							className="mt-2 flex min-w-0 flex-col gap-2"
+						>
+							<Label htmlFor="director-provider">Provider</Label>
+							<select
+								id="director-provider"
+								className="bg-input w-full min-w-0 rounded-md border p-1.5 text-sm"
+								value={model.provider}
+								onChange={(event) =>
+									chooseModel(
+										directorModels.find(
+											({ provider }) => provider === event.target.value,
+										),
+									)
+								}
+							>
+								{Object.entries(directorProviders).map(([id, info]) => (
+									<option key={id} value={id}>
+										{info.label}
+									</option>
+								))}
+							</select>
+							<Label htmlFor="director-model">Model</Label>
+							<select
+								id="director-model"
+								className="bg-input w-full min-w-0 rounded-md border p-1.5 text-sm"
+								aria-describedby="director-model-rates"
+								value={model.id}
+								onChange={(event) =>
+									chooseModel(
+										directorModels.find(({ id }) => id === event.target.value),
+									)
+								}
+							>
+								{directorModels
+									.filter(({ provider }) => provider === model.provider)
+									.map((option) => (
+										<option key={option.id} value={option.id}>
+											{option.label} · {directorModelPrice(option)}
+										</option>
+									))}
+							</select>
+							<p
+								id="director-model-rates"
+								className="text-muted-foreground text-xs"
+							>
+								{model.hint}. Prices are USD per 1M input / output tokens at
+								standard rates. Usage varies by request.{" "}
+								<a
+									className="underline underline-offset-2"
+									href={provider.pricing}
+									target="_blank"
+									rel="noreferrer"
+								>
+									Pricing
+								</a>
+							</p>
+						</fieldset>
+					</details>
 					<details className="rounded-md border p-2">
 						<summary className="cursor-pointer text-sm">
 							Channel, series and Brand Kit
@@ -326,6 +422,12 @@ export function DirectorPanel({
 									{turn.question}
 								</p>
 								<p className="whitespace-pre-wrap break-words">{turn.answer}</p>
+								<p className="text-muted-foreground text-xs">
+									{turn.model}
+									{turn.usage
+										? ` · ${turn.usage.input_tokens.toLocaleString()} in / ${turn.usage.output_tokens.toLocaleString()} out tokens`
+										: ""}
+								</p>
 								<div className="flex flex-wrap gap-1">
 									{turn.clips.map((clip) => (
 										<Button
@@ -372,8 +474,8 @@ export function DirectorPanel({
 					{sending ? "Thinking…" : "Ask Director"}
 				</Button>
 				<p className="text-muted-foreground text-xs">
-					Sending shares your question, selected notes, and scene metadata with
-					OpenAI.
+					Sending shares your question, recent conversation, selected notes, and
+					scene metadata with {provider.label}.
 				</p>
 			</form>
 		</section>

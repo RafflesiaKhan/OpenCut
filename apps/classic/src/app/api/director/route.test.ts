@@ -3,10 +3,17 @@ import { POST } from "./route";
 
 const host = "127.0.0.1:3102";
 const origin = `http://${host}`;
-const originalKey = process.env.OPENAI_API_KEY;
+const keyNames = [
+	"OPENAI_API_KEY",
+	"ANTHROPIC_API_KEY",
+	"XAI_API_KEY",
+] as const;
+const originalKeys = keyNames.map((name) => process.env[name]);
 let provider: ReturnType<typeof spyOn<typeof globalThis, "fetch">>;
 
 const data = {
+	provider: "openai",
+	model: "gpt-6-luna",
 	question: "What would you change here?",
 	history: [],
 	brand: {
@@ -50,7 +57,7 @@ function request(payload: unknown, requestOrigin = origin) {
 }
 
 beforeEach(() => {
-	process.env.OPENAI_API_KEY = "mock-director-key";
+	for (const name of keyNames) process.env[name] = `mock-${name}`;
 	provider = spyOn(globalThis, "fetch").mockResolvedValue(
 		new Response(null, { status: 500 }),
 	);
@@ -58,8 +65,11 @@ beforeEach(() => {
 
 afterEach(() => {
 	provider.mockRestore();
-	if (originalKey === undefined) delete process.env.OPENAI_API_KEY;
-	else process.env.OPENAI_API_KEY = originalKey;
+	keyNames.forEach((name, index) => {
+		const value = originalKeys[index];
+		if (value === undefined) delete process.env[name];
+		else process.env[name] = value;
+	});
 });
 
 test("rejects other origins and reports an empty local key without calling OpenAI", async () => {
@@ -71,6 +81,9 @@ test("rejects other origins and reports an empty local key without calling OpenA
 
 test("validates context, sends only defined fields, and returns only supplied clip IDs", async () => {
 	expect((await POST(request({ ...data, question: "" }))).status).toBe(400);
+	expect((await POST(request({ ...data, provider: "anthropic" }))).status).toBe(
+		400,
+	);
 	expect(provider).not.toHaveBeenCalled();
 	provider.mockResolvedValueOnce(
 		Response.json({
@@ -102,5 +115,86 @@ test("validates context, sends only defined fields, and returns only supplied cl
 	expect(url).toBe("https://api.openai.com/v1/responses");
 	const sent = JSON.parse(String(options?.body));
 	expect(sent.store).toBe(false);
-	expect(JSON.parse(sent.input)).toEqual(data);
+	const { question, history, brand, project } = data;
+	expect(JSON.parse(sent.input[1].content)).toEqual({
+		question,
+		history,
+		brand,
+		project,
+	});
+	expect(sent.model).toBe("gpt-6-luna");
+});
+
+test("sends the selected Anthropic model through Messages and returns usage", async () => {
+	provider.mockResolvedValueOnce(
+		Response.json({
+			content: [
+				{
+					type: "text",
+					text: JSON.stringify({
+						answer: "Try a slower opening.",
+						clipIds: [],
+					}),
+				},
+			],
+			usage: { input_tokens: 125, output_tokens: 30 },
+		}),
+	);
+	const result = await POST(
+		request({ ...data, provider: "anthropic", model: "claude-haiku-5-5" }),
+	);
+	expect(await result.json()).toEqual({
+		answer: "Try a slower opening.",
+		clipIds: [],
+		usage: { input_tokens: 125, output_tokens: 30 },
+	});
+	const [url, options] = provider.mock.calls[0];
+	const headers = new Headers(options?.headers);
+	expect(url).toBe("https://api.anthropic.com/v1/messages");
+	expect(headers.get("x-api-key")).toBe("mock-ANTHROPIC_API_KEY");
+	expect(headers.get("authorization")).toBeNull();
+	const sent = JSON.parse(String(options?.body));
+	expect(sent.model).toBe("claude-haiku-5-5");
+	expect(sent.output_config.format.type).toBe("json_schema");
+});
+
+test("sends the selected Grok model to xAI and reads Responses output", async () => {
+	const grok = { ...data, provider: "xai", model: "grok-4.7" };
+	process.env.XAI_API_KEY = "";
+	const missing = await POST(request(grok));
+	expect(missing.status).toBe(503);
+	expect((await missing.json()).error).toContain("XAI_API_KEY");
+	expect(provider).not.toHaveBeenCalled();
+	process.env.XAI_API_KEY = "mock-XAI_API_KEY";
+	provider.mockResolvedValueOnce(
+		Response.json({
+			output: [
+				{
+					type: "message",
+					content: [
+						{
+							type: "output_text",
+							text: JSON.stringify({
+								answer: "Use the title.",
+								clipIds: ["intro"],
+							}),
+						},
+					],
+				},
+			],
+			usage: { input_tokens: 75, output_tokens: 8 },
+		}),
+	);
+	const result = await POST(request(grok));
+	expect(await result.json()).toEqual({
+		answer: "Use the title.",
+		clipIds: ["intro"],
+		usage: { input_tokens: 75, output_tokens: 8 },
+	});
+	const [url, options] = provider.mock.calls[0];
+	expect(url).toBe("https://api.x.ai/v1/responses");
+	expect(new Headers(options?.headers).get("authorization")).toBe(
+		"Bearer mock-XAI_API_KEY",
+	);
+	expect(JSON.parse(String(options?.body)).model).toBe("grok-4.7");
 });

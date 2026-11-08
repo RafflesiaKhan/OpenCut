@@ -4,7 +4,7 @@ The Director is a production partner inside Classic. It helps a creator develop 
 
 ## Try the first version
 
-Classic reads `OPENAI_API_KEY` and the optional `DIRECTOR_OPENAI_MODEL` from its ignored `.env.local`. Restart Classic after adding a key, then open a local project and click **Director**. Save channel, series, and Brand Kit notes or select notes you saved in another project. The notes stay in this browser until a question is submitted. Each question sends the selected notes, recent conversation, and a bounded snapshot of the active scene to OpenAI.
+Classic reads `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, and `XAI_API_KEY` from its ignored `.env.local`. Add the key for the provider you want to use and restart Classic. Open a local project, click **Director**, and expand **Provider and model**. The selector shows standard USD prices per million input and output tokens. When the provider reports usage, the reply shows its actual token counts. Save channel, series, and Brand Kit notes or select notes you saved in another project. The notes stay in this browser until a question is submitted. Each question sends the selected notes, recent conversation, and a bounded snapshot of the active scene to the selected provider.
 
 Ask for an episode idea, a script outline, or advice on selected clips. Clip references let you jump within the active scene. This first version reads metadata and timeline text. Media generation, timeline edits, and OpenArt remain later milestones.
 

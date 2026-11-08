@@ -2,18 +2,36 @@ import { z } from "zod";
 import {
 	directorReplySchema,
 	directorRequestSchema,
+	directorUsageSchema,
 } from "@/director/contract";
 
+import { directorModels, directorProviders } from "@/director/models";
+
+const textPart = z.object({ type: z.string(), text: z.string().optional() });
 const responseSchema = z.object({
 	output: z.array(
 		z.object({
 			type: z.string(),
-			content: z
-				.array(z.object({ type: z.string(), text: z.string().optional() }))
-				.optional(),
+			content: z.array(textPart).optional(),
 		}),
 	),
 });
+
+const messagesSchema = z.object({
+	content: z.array(textPart),
+});
+const replyFormat = {
+	type: "json_schema",
+	schema: {
+		type: "object",
+		additionalProperties: false,
+		required: ["answer", "clipIds"],
+		properties: {
+			answer: { type: "string" },
+			clipIds: { type: "array", items: { type: "string" } },
+		},
+	},
+} as const;
 
 const instructions = [
 	"You are the OpenCut Director, a collaborative video editor and YouTube production partner.",
@@ -48,13 +66,6 @@ export async function POST(request: Request) {
 		return error("Expected a JSON Director request.", 415);
 	}
 
-	const key = process.env.OPENAI_API_KEY?.trim();
-	if (!key)
-		return error(
-			"Add OPENAI_API_KEY to apps/classic/.env.local, then restart Classic.",
-			503,
-		);
-
 	const raw = await request.text();
 	if (raw.length > 100_000)
 		return error("The Director request is too large.", 413);
@@ -68,67 +79,92 @@ export async function POST(request: Request) {
 	if (!input.success)
 		return error("The Director request has invalid project context.", 400);
 
+	const { provider, model: modelId, ...context } = input.data;
+	const model = directorModels.find(
+		({ id, provider: owner }) => id === modelId && owner === provider,
+	);
+	if (!model) return error("Select an available model for this provider.", 400);
+
+	const { label, key: keyName } = directorProviders[provider];
+	const key = process.env[keyName]?.trim();
+	if (!key)
+		return error(
+			`Add ${keyName} to apps/classic/.env.local, then restart Classic.`,
+			503,
+		);
+
+	const anthropic = provider === "anthropic";
+	const url = anthropic
+		? "https://api.anthropic.com/v1/messages"
+		: provider === "xai"
+			? "https://api.x.ai/v1/responses"
+			: "https://api.openai.com/v1/responses";
+	const auth: Record<string, string> = anthropic
+		? { "x-api-key": key, "anthropic-version": "2023-06-01" }
+		: { Authorization: `Bearer ${key}` };
+	const prompt = JSON.stringify(context);
+	const payload = anthropic
+		? {
+				model: model.id,
+				system: instructions,
+				messages: [{ role: "user", content: prompt }],
+				max_tokens: 4000,
+				output_config: { effort: model.effort, format: replyFormat },
+			}
+		: {
+				model: model.id,
+				store: false,
+				input: [
+					{ role: "system", content: instructions },
+					{ role: "user", content: prompt },
+				],
+				max_output_tokens: 4000,
+				reasoning: { effort: model.effort },
+				text: {
+					format: { ...replyFormat, name: "director_reply", strict: true },
+				},
+			};
+
 	try {
-		const response = await fetch("https://api.openai.com/v1/responses", {
+		const response = await fetch(url, {
 			method: "POST",
-			headers: {
-				Authorization: `Bearer ${key}`,
-				"Content-Type": "application/json",
-			},
+			headers: { ...auth, "Content-Type": "application/json" },
 			redirect: "error",
 			signal: AbortSignal.any([request.signal, AbortSignal.timeout(60_000)]),
-			body: JSON.stringify({
-				model: process.env.DIRECTOR_OPENAI_MODEL?.trim() || "gpt-5-mini",
-				store: false,
-				instructions,
-				input: JSON.stringify(input.data),
-				max_output_tokens: 4000,
-				text: {
-					format: {
-						type: "json_schema",
-						name: "director_reply",
-						strict: true,
-						schema: {
-							type: "object",
-							additionalProperties: false,
-							required: ["answer", "clipIds"],
-							properties: {
-								answer: { type: "string" },
-								clipIds: { type: "array", items: { type: "string" } },
-							},
-						},
-					},
-				},
-			}),
+			body: JSON.stringify(payload),
 		});
 		if (!response.ok) {
 			if (response.status === 401 || response.status === 403)
 				return error(
-					"OpenAI rejected the key or model access. Check Classic’s local settings.",
+					`${label} rejected the key or model access. Check Classic’s local settings.`,
 					502,
 				);
 			if (response.status === 429)
 				return error(
-					"OpenAI reached its rate or quota limit. Check your OpenAI account or retry shortly.",
+					`${label} reached its rate or quota limit. Check your provider account or retry shortly.`,
 					502,
 				);
 			return error(
-				`OpenAI could not answer (HTTP ${response.status}). Check the configured model and retry.`,
+				`${label} could not answer (HTTP ${response.status}). Check model access and retry.`,
 				502,
 			);
 		}
 
-		const result = responseSchema.parse(await response.json());
-		const content = result.output
-			.filter(({ type }) => type === "message")
-			.flatMap(({ content }) => content ?? []);
+		const result = await response.json();
+		const usage = directorUsageSchema.safeParse(result?.usage);
+		const content = anthropic
+			? messagesSchema.parse(result).content
+			: responseSchema
+					.parse(result)
+					.output.filter(({ type }) => type === "message")
+					.flatMap(({ content }) => content ?? []);
 		const text = content
-			.filter(({ type }) => type === "output_text")
+			.filter(({ type }) => type === (anthropic ? "text" : "output_text"))
 			.map(({ text }) => text ?? "")
 			.join("");
 		if (!text)
 			return error(
-				"OpenAI returned no Director answer. Try a shorter question.",
+				`${label} returned no Director answer. Try a shorter question.`,
 				502,
 			);
 		const reply = directorReplySchema.parse(JSON.parse(text));
@@ -136,6 +172,7 @@ export async function POST(request: Request) {
 		return Response.json(
 			{
 				answer: reply.answer,
+				...(usage.success ? { usage: usage.data } : {}),
 				clipIds: [...new Set(reply.clipIds)]
 					.filter((id) => validIds.has(id))
 					.slice(0, 6),
@@ -146,7 +183,7 @@ export async function POST(request: Request) {
 		if (cause instanceof Error && cause.name === "TimeoutError")
 			return error("The Director timed out. Try a shorter question.", 504);
 		return error(
-			"The Director could not read a response from OpenAI. Try again.",
+			`The Director could not read a response from ${label}. Try again.`,
 			502,
 		);
 	}
