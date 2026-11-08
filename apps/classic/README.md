@@ -27,6 +27,49 @@ docker compose up -d
 
 The editor itself works without them.
 
+## Canva extension ports
+
+Open a project and use the tabs in the left panel. Enter provider keys in each
+tab's Settings. The keys stay in browser session storage, and the two image tabs
+share a Gemini key.
+
+| Tab | What to try |
+| --- | --- |
+| Murf Voiceover | Generate with Gen2 or Falcon, preview, then add the MP3 to the timeline or download it. |
+| AI Image | Generate with Gemini or OpenAI, preview, then add or download the image. |
+| Image Batcher | Enter one prompt per line, optionally add a style guide and references, then add a single result or the full sequence at the playhead. ZIP export is also available. |
+| YouTube Get | Fetch metadata with a link or ID, add the thumbnail, or copy a `yt-dlp` command. The optional YouTube Data API key unlocks more metadata. Audio, video, and caption downloads run locally using those commands. |
+
+The panels are ported from the sibling `canva-ai-integration-tools` repository.
+The public YouTube oEmbed, thumbnail, and public Google Docs export requests use
+Classic's local API route so they can load in the editor without browser CORS
+issues. Paid generation requests go directly from the browser to their provider.
+
+## Local Voice Studio narration
+
+Run [Voice Studio](https://github.com/debpalash/VoiceStudio) on the same computer
+as Classic. Set `VOICESTUDIO_URL=http://127.0.0.1:3900` in `.env.local`, then
+restart Classic and open it at `http://localhost:3000` or its local port.
+
+In a project, open **AI Voice → Provider → Voice Studio (local)**. Open Voice Studio
+and let its local service start, then refresh the provider if needed. Pick its
+active engine or one it reports as available, choose a saved voice or the engine
+default, and enter up to 4,096 characters. Select OmniVoice explicitly to see
+designed voices. Generate, preview the WAV, then add it at the playhead.
+
+This connector uses Voice Studio's loopback speech interface and needs no API key
+for the desktop app. The script is sent only to the local service. Gemini remains
+available in the same panel.
+
+## Sound effects
+
+Open **Sounds → SFX** for Wyzowl's [SFX Kit](https://github.com/wyzowl/sfx-kit),
+a CC0 collection of 320 effects. Search or filter by category, preview a sound,
+then add it at the playhead. The catalog is bundled. Each original WAV loads on
+demand from the [pinned revision](https://github.com/wyzowl/sfx-kit/tree/92780e7ab0cdfb557497a988089c47f46e8c7412)
+and is saved in project media on import. No API key is required. **Sound effects**
+and **Saved** still provide the existing Freesound views.
+
 ## Adding an extension
 
 Each extension is a tab in the editor's left panel, in its own folder:

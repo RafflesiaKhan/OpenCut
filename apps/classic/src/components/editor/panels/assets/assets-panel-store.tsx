@@ -1,3 +1,4 @@
+import { AudioLines, Image, Images, Youtube } from "lucide-react";
 import type { ElementType } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -20,6 +21,10 @@ export const TAB_KEYS = [
 	"media",
 	"sounds",
 	"voice",
+	"murf-voiceover",
+	"ai-image",
+	"image-batcher",
+	"youtube-get",
 	"text",
 	"stickers",
 	"effects",
@@ -50,6 +55,10 @@ export const tabs = {
 		icon: createHugeiconsIcon({ icon: AiVoiceIcon }),
 		label: "AI Voice",
 	},
+	"murf-voiceover": { icon: AudioLines, label: "Murf Voiceover" },
+	"ai-image": { icon: Image, label: "AI Image" },
+	"image-batcher": { icon: Images, label: "Image Batcher" },
+	"youtube-get": { icon: Youtube, label: "YouTube Get" },
 	text: {
 		icon: createHugeiconsIcon({ icon: TextIcon }),
 		label: "Text",
