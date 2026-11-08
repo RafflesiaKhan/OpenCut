@@ -157,6 +157,9 @@ export function SfxKitView() {
 								<p className="text-muted-foreground text-xs">
 									{sound.duration.toFixed(2)} s
 								</p>
+								<p className="text-muted-foreground mt-0.5 text-xs">
+									<span className="font-medium">Use for:</span> {sound.useFor}
+								</p>
 							</div>
 							<Button
 								variant="ghost"
