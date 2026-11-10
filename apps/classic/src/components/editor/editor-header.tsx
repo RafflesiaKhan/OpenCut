@@ -27,7 +27,13 @@ import { ShortcutsDialog } from "@/actions/components/shortcuts-dialog";
 import Image from "next/image";
 import { cn } from "@/utils/ui";
 
-export function EditorHeader() {
+export function EditorHeader({
+	directorOpen,
+	onToggleDirector,
+}: {
+	directorOpen: boolean;
+	onToggleDirector: () => void;
+}) {
 	return (
 		<header className="bg-background flex h-[3.4rem] items-center justify-between px-3 pt-0.5">
 			<div className="flex items-center gap-1">
@@ -37,6 +43,15 @@ export function EditorHeader() {
 			<nav className="flex items-center gap-2">
 				<FeedbackPopover />
 				<ExportButton />
+				<Button
+					variant={directorOpen ? "outline" : "ghost"}
+					size="sm"
+					onClick={onToggleDirector}
+					aria-controls="director-panel"
+					aria-expanded={directorOpen}
+				>
+					Director
+				</Button>
 				<ThemeToggle />
 			</nav>
 		</header>

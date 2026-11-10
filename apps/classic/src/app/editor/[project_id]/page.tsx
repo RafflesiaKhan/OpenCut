@@ -10,6 +10,7 @@ import { AssetsPanel } from "@/components/editor/panels/assets";
 import { PropertiesPanel } from "@/components/editor/panels/properties";
 import { Timeline } from "@/timeline/components";
 import { PreviewPanel } from "@/preview/components";
+import { DirectorPanel } from "@/director/director-panel";
 import { EditorHeader } from "@/components/editor/editor-header";
 import { EditorProvider } from "@/components/providers/editor-provider";
 import { Onboarding } from "@/components/editor/onboarding";
@@ -17,7 +18,7 @@ import { MigrationDialog } from "@/project/components/migration-dialog";
 import { usePanelStore } from "@/editor/panel-store";
 import { usePasteMedia } from "@/media/use-paste-media";
 import { MobileGate } from "@/components/editor/mobile-gate";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -38,15 +39,28 @@ import {
 export default function Editor() {
 	const params = useParams();
 	const projectId = params.project_id as string;
+	const [directorOpen, setDirectorOpen] = useState(false);
+	useEffect(() => {
+		if (new URLSearchParams(window.location.search).has("openart")) {
+			setDirectorOpen(true);
+		}
+	}, []);
 
 	return (
 		<MobileGate>
 			<EditorProvider projectId={projectId}>
 				<div className="bg-background flex h-screen w-screen flex-col overflow-hidden">
 					<DegradedRendererBanner />
-					<EditorHeader />
+					<EditorHeader
+						directorOpen={directorOpen}
+						onToggleDirector={() => setDirectorOpen((open) => !open)}
+					/>
 					<div className="min-h-0 min-w-0 flex-1">
-						<EditorLayout />
+						<EditorLayout
+							projectId={projectId}
+							directorOpen={directorOpen}
+							closeDirector={() => setDirectorOpen(false)}
+						/>
 					</div>
 					<Onboarding />
 					<MigrationDialog />
@@ -78,7 +92,15 @@ function DegradedRendererBanner() {
 	);
 }
 
-function EditorLayout() {
+function EditorLayout({
+	projectId,
+	directorOpen,
+	closeDirector,
+}: {
+	projectId: string;
+	directorOpen: boolean;
+	closeDirector: () => void;
+}) {
 	usePasteMedia();
 	const { panels, setPanel } = usePanelStore();
 	const activeScene = useEditor((editor) =>
@@ -180,7 +202,14 @@ function EditorLayout() {
 						maxSize={40}
 						className="min-w-0"
 					>
-						<PropertiesPanel />
+						{!directorOpen && <PropertiesPanel />}
+						<div className="h-full" hidden={!directorOpen}>
+							<DirectorPanel
+								key={projectId}
+								projectId={projectId}
+								onClose={closeDirector}
+							/>
+						</div>
 					</ResizablePanel>
 				</ResizablePanelGroup>
 			</ResizablePanel>
