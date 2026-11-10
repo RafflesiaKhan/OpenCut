@@ -20,6 +20,15 @@ const responseSchema = z.object({
 const messagesSchema = z.object({
 	content: z.array(textPart),
 });
+const kimiSchema = z.object({
+	choices: z.array(
+		z.object({ message: z.object({ content: z.string().nullish() }) }),
+	),
+	usage: z
+		.object({ prompt_tokens: z.number(), completion_tokens: z.number() })
+		.optional(),
+});
+
 const replyFormat = {
 	type: "json_schema",
 	schema: {
@@ -94,36 +103,55 @@ export async function POST(request: Request) {
 		);
 
 	const anthropic = provider === "anthropic";
+	const kimi = provider === "kimi";
 	const url = anthropic
 		? "https://api.anthropic.com/v1/messages"
 		: provider === "xai"
 			? "https://api.x.ai/v1/responses"
-			: "https://api.openai.com/v1/responses";
+			: kimi
+				? "https://api.moonshot.ai/v1/chat/completions"
+				: "https://api.openai.com/v1/responses";
 	const auth: Record<string, string> = anthropic
 		? { "x-api-key": key, "anthropic-version": "2023-06-01" }
 		: { Authorization: `Bearer ${key}` };
 	const prompt = JSON.stringify(context);
-	const payload = anthropic
+	const messages = [
+		{ role: "system", content: instructions },
+		{ role: "user", content: prompt },
+	];
+	const payload = kimi
 		? {
 				model: model.id,
-				system: instructions,
-				messages: [{ role: "user", content: prompt }],
-				max_tokens: 4000,
-				output_config: { effort: model.effort, format: replyFormat },
-			}
-		: {
-				model: model.id,
-				store: false,
-				input: [
-					{ role: "system", content: instructions },
-					{ role: "user", content: prompt },
+				messages: [
+					{
+						role: "system",
+						content:
+							instructions +
+							" Return a JSON object with answer (string) and clipIds (array of strings).",
+					},
+					messages[1],
 				],
-				max_output_tokens: 4000,
-				reasoning: { effort: model.effort },
-				text: {
-					format: { ...replyFormat, name: "director_reply", strict: true },
-				},
-			};
+				max_tokens: 4000,
+				response_format: { type: "json_object" },
+			}
+		: anthropic
+			? {
+					model: model.id,
+					system: instructions,
+					messages: [{ role: "user", content: prompt }],
+					max_tokens: 4000,
+					output_config: { effort: model.effort, format: replyFormat },
+				}
+			: {
+					model: model.id,
+					store: false,
+					input: messages,
+					max_output_tokens: 4000,
+					...(model.effort ? { reasoning: { effort: model.effort } } : {}),
+					text: {
+						format: { ...replyFormat, name: "director_reply", strict: true },
+					},
+				};
 
 	try {
 		const response = await fetch(url, {
@@ -151,13 +179,23 @@ export async function POST(request: Request) {
 		}
 
 		const result = await response.json();
-		const usage = directorUsageSchema.safeParse(result?.usage);
-		const content = anthropic
-			? messagesSchema.parse(result).content
-			: responseSchema
-					.parse(result)
-					.output.filter(({ type }) => type === "message")
-					.flatMap(({ content }) => content ?? []);
+		const kimiResult = kimi ? kimiSchema.parse(result) : null;
+		const usage = directorUsageSchema.safeParse(
+			kimiResult
+				? {
+						input_tokens: kimiResult.usage?.prompt_tokens,
+						output_tokens: kimiResult.usage?.completion_tokens,
+					}
+				: result?.usage,
+		);
+		const content = kimiResult
+			? [{ type: "output_text", text: kimiResult.choices[0]?.message.content }]
+			: anthropic
+				? messagesSchema.parse(result).content
+				: responseSchema
+						.parse(result)
+						.output.filter(({ type }) => type === "message")
+						.flatMap(({ content }) => content ?? []);
 		const text = content
 			.filter(({ type }) => type === (anthropic ? "text" : "output_text"))
 			.map(({ text }) => text ?? "")

@@ -20,7 +20,7 @@ const clipSchema = z.object({
 });
 
 export const directorRequestSchema = z.object({
-	provider: z.enum(["openai", "anthropic", "xai"]),
+	provider: z.enum(["openai", "anthropic", "xai", "kimi"]),
 	model: label,
 	question: z.string().trim().min(1).max(2000),
 	history: z

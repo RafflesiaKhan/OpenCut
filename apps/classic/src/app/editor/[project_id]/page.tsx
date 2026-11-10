@@ -18,7 +18,7 @@ import { MigrationDialog } from "@/project/components/migration-dialog";
 import { usePanelStore } from "@/editor/panel-store";
 import { usePasteMedia } from "@/media/use-paste-media";
 import { MobileGate } from "@/components/editor/mobile-gate";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useEditor } from "@/editor/use-editor";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -40,6 +40,11 @@ export default function Editor() {
 	const params = useParams();
 	const projectId = params.project_id as string;
 	const [directorOpen, setDirectorOpen] = useState(false);
+	useEffect(() => {
+		if (new URLSearchParams(window.location.search).has("openart")) {
+			setDirectorOpen(true);
+		}
+	}, []);
 
 	return (
 		<MobileGate>

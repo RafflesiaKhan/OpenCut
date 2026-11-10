@@ -20,6 +20,7 @@ import {
 	directorModels,
 	directorProviders,
 } from "./models";
+import { OpenArtConnector } from "./openart-connector";
 import { readDirectorProject, sceneTracks } from "./project-context";
 
 type Brand = DirectorBrand & { id: string };
@@ -325,7 +326,7 @@ export function DirectorPanel({
 								className="text-muted-foreground text-xs"
 							>
 								{model.hint}. Prices are USD per 1M input / output tokens at
-								standard rates. Usage varies by request.{" "}
+								base rates. Usage varies by request.{" "}
 								<a
 									className="underline underline-offset-2"
 									href={provider.pricing}
@@ -337,6 +338,7 @@ export function DirectorPanel({
 							</p>
 						</fieldset>
 					</details>
+					<OpenArtConnector projectId={projectId} />
 					<details className="rounded-md border p-2">
 						<summary className="cursor-pointer text-sm">
 							Channel, series and Brand Kit

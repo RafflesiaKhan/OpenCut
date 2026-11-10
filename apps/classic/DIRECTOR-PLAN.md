@@ -4,9 +4,11 @@ The Director is a production partner inside Classic. It helps a creator develop 
 
 ## Try the first version
 
-Classic reads `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, and `XAI_API_KEY` from its ignored `.env.local`. Add the key for the provider you want to use and restart Classic. Open a local project, click **Director**, and expand **Provider and model**. The selector shows standard USD prices per million input and output tokens. When the provider reports usage, the reply shows its actual token counts. Save channel, series, and Brand Kit notes or select notes you saved in another project. The notes stay in this browser until a question is submitted. Each question sends the selected notes, recent conversation, and a bounded snapshot of the active scene to the selected provider.
+Classic reads `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `XAI_API_KEY`, and `MOONSHOT_API_KEY` from its ignored `.env.local`. Add the key for the provider you want to use and restart Classic. Open a local project, click **Director**, and expand **Provider and model**. Each provider has five choices. Kimi marks two older models as available only to accounts registered before November 1, 2026. The selector shows base, uncached USD prices per million input and output tokens. When the provider reports usage, the reply shows its actual token counts. Save channel, series, and Brand Kit notes or select notes you saved in another project. The notes stay in this browser until a question is submitted. Each question sends the selected notes, recent conversation, and a bounded snapshot of the active scene to the selected provider.
 
-Ask for an episode idea, a script outline, or advice on selected clips. Clip references let you jump within the active scene. This first version reads metadata and timeline text. Media generation, timeline edits, and OpenArt remain later milestones.
+Expand **OpenArt MCP** in Director and connect using your OpenArt account. Once signed in, **List tools** shows what OpenArt advertises for that account. The local connection expires when Classic restarts or after eight hours. Chat-driven generation and importing results into Assets are later stages.
+
+Ask for an episode idea, a script outline, or advice on selected clips. Clip references let you jump within the active scene. This first version reads metadata and timeline text. Media generation and timeline edits remain later milestones.
 
 ## The episode workflow
 
@@ -23,10 +25,10 @@ Ask for an episode idea, a script outline, or advice on selected clips. Clip ref
 
 ## Model, skills, and tools
 
-- **Model.** Let the creator choose OpenAI, Anthropic, or xAI (Grok). Use server-side local `.env` credentials first and add provider, model, and key management in Settings. The chosen model plans and reasons. Generation connectors run the requested media jobs.
+- **Model.** Let the creator choose OpenAI, Anthropic, xAI (Grok), or Kimi (Moonshot AI). Use server-side local `.env` credentials first and add provider, model, and key management in Settings. The chosen model plans and reasons. Generation connectors run the requested media jobs.
 - **Skills and resources.** Skills are repeatable workflows, such as developing a YouTube episode or checking a rough cut against a brand brief. Resources are the active Brand Kit, past scripts, episode notes, and approved references the skill can consult.
 - **Classic tools.** Expose a small, typed set of actions over existing editor commands and extensions. Start with project and timeline inspection, SFX search, and local Voice Studio. Expand to the media library, Gemini and Murf narration, image tools, captions, and timeline edits as their interfaces are ready.
-- **OpenArt MCP.** Add OpenArt as an optional connector using its official Streamable HTTP endpoint and account OAuth. Start with reference-driven image and video generation. Discover tools available to the connected account before offering dedicated voiceover, audio, or lip-sync actions. Record which references leave the machine and show paid generation jobs for review before spending credits. [OpenArt MCP documentation](https://openart.ai/mcp/)
+- **OpenArt MCP.** OpenArt uses its official Streamable HTTP endpoint and account OAuth. Start with reference-driven image and video generation. Discover tools available to the connected account before offering dedicated voiceover, audio, or lip-sync actions. Record which references leave the machine and show paid generation jobs for review before spending credits. [OpenArt MCP documentation](https://openart.ai/mcp/)
 
 ## Assets and timeline control
 

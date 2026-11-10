@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, expect, spyOn, test } from "bun:test";
+import { directorModels, directorProviders } from "@/director/models";
 import { POST } from "./route";
 
 const host = "127.0.0.1:3102";
@@ -7,6 +8,7 @@ const keyNames = [
 	"OPENAI_API_KEY",
 	"ANTHROPIC_API_KEY",
 	"XAI_API_KEY",
+	"MOONSHOT_API_KEY",
 ] as const;
 const originalKeys = keyNames.map((name) => process.env[name]);
 let provider: ReturnType<typeof spyOn<typeof globalThis, "fetch">>;
@@ -197,4 +199,54 @@ test("sends the selected Grok model to xAI and reads Responses output", async ()
 		"Bearer mock-XAI_API_KEY",
 	);
 	expect(JSON.parse(String(options?.body)).model).toBe("grok-4.7");
+});
+
+test("each provider has five distinct models", () => {
+	for (const provider of Object.keys(directorProviders)) {
+		expect(
+			directorModels.filter((model) => model.provider === provider),
+		).toHaveLength(5);
+	}
+	expect(new Set(directorModels.map(({ id }) => id)).size).toBe(
+		directorModels.length,
+	);
+});
+
+test("Kimi uses Moonshot Chat Completions and normalizes usage", async () => {
+	const kimi = { ...data, provider: "kimi", model: "kimi-k3.1-pro" };
+	process.env.MOONSHOT_API_KEY = "";
+	expect((await (await POST(request(kimi))).json()).error).toContain(
+		"MOONSHOT_API_KEY",
+	);
+	expect(provider).not.toHaveBeenCalled();
+	process.env.MOONSHOT_API_KEY = "mock-MOONSHOT_API_KEY";
+	provider.mockResolvedValueOnce(
+		Response.json({
+			choices: [
+				{
+					message: {
+						content: JSON.stringify({
+							answer: "Hold the title.",
+							clipIds: ["intro"],
+						}),
+					},
+				},
+			],
+			usage: { prompt_tokens: 120, completion_tokens: 40 },
+		}),
+	);
+	expect(await (await POST(request(kimi))).json()).toEqual({
+		answer: "Hold the title.",
+		clipIds: ["intro"],
+		usage: { input_tokens: 120, output_tokens: 40 },
+	});
+	const [url, options] = provider.mock.calls[0];
+	expect(url).toBe("https://api.moonshot.ai/v1/chat/completions");
+	expect(new Headers(options?.headers).get("authorization")).toBe(
+		"Bearer mock-MOONSHOT_API_KEY",
+	);
+	expect(JSON.parse(String(options?.body))).toMatchObject({
+		model: kimi.model,
+		response_format: { type: "json_object" },
+	});
 });
