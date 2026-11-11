@@ -79,6 +79,10 @@ Want your logo here? Reach out at [sponsor@opencut.app](mailto:sponsor@opencut.a
 
 ## AI-Ready Video Editor Plan (my-suitable-editor)
 
+> **Detailed planning documents (11 Nov 2026):** Start with [Creator studio planning](planning/README.md) for the conversation-led workflow, specialist agents, series/scenes/assets, connector plan, reviews of the three suggested repositories, and proposed milestones. These are design drafts, not implementation-completion claims. The shorter plan below retains earlier context and historical status notes.
+
+
+
 My plan for this fork. Synced from the live plan doc on Nov 8, 2026: [AI-Ready Video Editor Plan](https://claude.ai/artifact/PA8rCebq1HKkmqKgs8JKRL) (it also has the diagram and status dropdowns).
 
 Turn the OpenCut fork into my own AI-ready video editor: every Canva extension I built, plus music, sound-effect and preset libraries, plugged in as extensions with free and paid connectors.
