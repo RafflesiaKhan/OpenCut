@@ -16,4 +16,4 @@ apps/web/next-env.d.ts
 *.tsbuildinfo
 
 # Early local design experiments; not the current product specification
-/design-prototype/
+# /design-prototype/

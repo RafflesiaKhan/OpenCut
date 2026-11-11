@@ -13,6 +13,7 @@ Status: proposed order; no implementation dates or completion promises
 - Generate in batches, regenerate individual scenes, preserve accepted work.
 - Add subtitles, transitions, restrained image motion, quiet music and meaningful SFX through manual controls or agents.
 - Keep future project-specific code generation and additional integrations in view.
+- Use the Director chat like a command-capable assistant: a follow-up form after the first message, and `/` skills such as `/script` and `/voiceover` that route to the specialists (11 November 2026).
 - Do not commit work in this planning/design exercise.
 
 ## Proposed milestones
@@ -52,23 +53,28 @@ Experiments involving paid generation require a concrete selected route and auth
 
 | ID | Decision | Current proposal / what will resolve it |
 | --- | --- | --- |
-| D01 | Greeting and working Director placement | Small opening overlay; expandable side panel later. Try in HTML before choosing widths |
+| D01 | Greeting and working Director placement | **Decided 11 Nov 2026 (creator):** a floating agent icon at the bottom-right of the preview opens the chat as a compact pop-over that can expand into the side panel. Chat first, with tool shortcuts inside it. No pop-up on load and no Director button beside Export. Widths still to be tuned in HTML |
 | D02 | Optional preset grid vs chat-only start | Show recent series/presets as shortcuts, accept free-form prompt immediately |
 | D03 | First real production example | Popy illustrated story proposed; choose with creator before live generation |
 | D04 | Canonical Popy and narrator | Select approved reference and actual saved voice configuration; do not infer from filenames |
 | D05 | Story scene representation | Linked scene cards and main-timeline intervals proposed; verify Classic playback/export |
 | D06 | Voice chunking and alignment | Use actual returned audio; compare continuous and chunked paths within current limits |
-| D07 | Agent runtime and model selection | Earlier research points toward AI SDK; verify current APIs only when implementation begins; roles do not require all-new agents on day one |
+| D07 | Agent runtime and model selection | Continuing tool-using runtime, skills, real specialist loops and project-scoped code tools are required; SDK and transport remain open. See document 09 |
 | D08 | Storage and backup | Reuse existing browser storage where practical; choose project export/backup and local-service file bridge |
 | D09 | Grouping extension tabs | Preserve current UI until mock tests show whether Create/Libraries/Brand grouping is clearer |
 | D10 | Generation budget and automation scope | Batch authorization, visible estimates, selected-model fidelity and bounded retries |
 | D11 | External reuse | Stickman sample candidate; OpenMontage architecture reference; MrPaidSocial permissions unresolved |
 | D12 | Editing autonomy | Review a proposed batch initially; later define clearly bounded routine operations from user preference |
+| D13 | Slash-command set and custom skills | Starting set in documents 02/03 proposed; try the `/` menu in HTML; creator-defined skills later |
 
 ## Next design session
 
-Start with D01–D03. Add only the opening conversation, loaded-series summary and one example production draft/scene board to the HTML. Keep the two existing tabs and screenshot-derived editor. Test the creator's understanding before adding real mic recording, model calls or generation.
+Continue the HTML happy path and document 09 together. D01 already selects the floating chat. Demonstrate brief → draft → scene insertion → narration → illustrations → reviewed edit through ordinary requests or slash shortcuts. Keep the two existing tabs and screenshot-derived editor. Test the creator's understanding before adding real mic recording, model calls or generation.
 
 ## Keep honest progress
 
 For every trial record: date, selected revision/provider, authorized scope, inputs, observed result, artifact location, failures and what remains unverified. A tool being listed, a schema validating or a render file existing cannot stand in for the full creator workflow passing.
+
+## Current design iteration · 11 November 2026
+
+The local happy path now simulates task activity and shared conversation/command actions. It uses a fictional narrator and coloured visual stand-ins; no provider or live agent is involved. Actual draft/contract code already exists with tests. Runtime implementation remains pending. Next gate: creator walkthrough and refinement of this mock experience before F1/F2 from document 09.

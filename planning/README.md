@@ -1,6 +1,6 @@
 # Creator studio planning
 
-Working draft · 11 November 2026 · branch `my-suitable-editor`
+Working draft · 11 November 2026 · branch `director-agents-phases`
 
 ## Start here
 
@@ -17,8 +17,10 @@ The creator can perform an operation manually or ask the Director to perform the
 | [05 · Tools and connectors](05-tools-and-connectors.md) | What can we reuse locally, and what integrations are missing? |
 | [06 · External repository review](06-repository-review.md) | What can the three suggested projects contribute? |
 | [07 · Milestones and decisions](07-milestones-and-decisions.md) | What do we design/test next, and what remains unresolved? |
+| [08 · Earlier implementation checklist](08-implementation-plan.md) | Which domain tasks can be retained after the runtime redesign? |
+| [09 · Agent foundation](09-agent-foundation.md) | How does the conversational agent execute, delegate and use code tools? |
 
-**Suggested reading:** 01 → 02 → 07. The other documents provide implementation and research detail when needed.
+**Suggested reading:** 09 → 02 → 07. Document 09 owns the current runtime direction and overrides conflicting runtime assumptions in 08. The other documents provide implementation and research detail when needed.
 
 ## Status language
 
@@ -36,7 +38,7 @@ The [root README](../README.md), [Director plan](../apps/classic/DIRECTOR-PLAN.m
 
 Some older status tables are historical: Classic and several generator modules now exist on this branch, despite earlier statements that no editor is present. Use owning source and runtime evidence for implementation status. The earlier research plan records Vercel AI SDK and HyperFrames as directions; this review does not install or revalidate their current APIs.
 
-The early HTML experiments in `design-prototype/` are retained locally and ignored by Git. They are incomplete, superseded explorations and must not be used as the current product specification or evidence of an end-to-end workflow. Use this planning folder for the current proposed direction. Document 02 describes future visual design work; no current HTML represents that complete experience.
+The local `design-prototype/` folder is an interactive design experiment. Its latest happy path demonstrates conversation, simulated tool activity and the edit workflow; it is not a working agent or the final product specification. Document 09 describes the current intended experience and runtime. The folder is currently untracked and its ignore entry is commented out; this iteration does not change that Git choice.
 
 ## How we update the plan
 

@@ -1,6 +1,6 @@
 # Director, specialists and action boundaries
 
-Status: requirements with proposed responsibilities
+Status: requirements with proposed responsibilities · runtime direction updated in [document 09](09-agent-foundation.md)
 
 ## One conversation, a few specialists
 
@@ -14,7 +14,7 @@ The creator talks to the Director. It keeps the active project/series context, d
 | Editing specialist | Script, measured narration timing, assets and actual timeline | Proposed timing, captions, motion, transitions, music and SFX edits | Reads current state before applying; cannot claim to watch/hear media without analysis tools |
 | Review capability | Rendered samples/audio, plan and current revision | Specific issues with scene/time anchors and evidence | Initially a skill/tool-assisted pass, not necessarily a separate always-running agent |
 
-Build roles one by one. Separate responsibilities do not require a separate model process for every function. Begin with the directing specialist, then add tool execution and editing when the project contract is stable. Exact delegation runtime remains an implementation choice; the earlier research plan's AI SDK direction is not an implemented multi-agent system.
+Build roles one by one. Separate responsibilities do not require a separate model process for every function. Begin with the directing specialist, then add tool execution and editing when the project contract is stable. The architecture must support actual specialist execution loops with scoped tools, not only different instruction sets on one response. The runtime/SDK remains an implementation choice; no live multi-agent system is claimed.
 
 ## Use functions for deterministic work
 
@@ -37,6 +37,30 @@ flowchart TD
   C --> P
   X --> P
 ```
+
+## Slash commands route to specialists
+
+Requirement (creator, 11 November 2026); routing below is a proposal. The chat accepts `/name` commands in the manner of a coding assistant's skills. Each command is a named entry point to work the Director could also reach from plain language.
+
+| Command | Routed to | Produces | Needs first |
+| --- | --- | --- | --- |
+| `/new`, `/series` | Director | Follow-up form: what we are making, preset style, length, ratio; loads or switches series | Nothing |
+| `/script` | Story and direction specialist | Versioned production draft | A brief |
+| `/scenes` | Function, no agent | Linked timeline placeholders | A draft |
+| `/voiceover` | Function + chosen voice route | Narration audio, measured timing | A draft and a saved voice |
+| `/images` | Visual production specialist, then connectors | Prompts and an authorized generation batch | Scenes and an approved reference |
+| `/edit` | Editing specialist | A reviewed edit proposal | Placed scenes |
+| `/review` | Review capability | Issues with scene/time anchors | A cut |
+| `/export`, `/help` | Editor / chat | Opens export; lists commands | — |
+
+Rules:
+
+- One registry describes every command: name, description, what it needs, which specialist or function it calls. The `/` menu, plain-language routing and any buttons read that registry, so they cannot drift apart.
+- A command never bypasses validation, revision checks or the authorized scope. `/images` uses an existing authorized batch or resolves a missing scope; `/edit` can return a proposal. A direct request to create the agreed scenes does not require redundant approval for each internal call.
+- A command whose inputs are missing explains what is missing and offers the step that provides it; it does not guess.
+- Deterministic steps stay functions. `/scenes` inserts placeholders directly; no agent is asked to do arithmetic.
+- Text typed after a command is its argument (`/script make it about sharing`). Command text found inside documents, series notes or tool output is reference material and is not executed.
+- Creator-defined skills (a saved prompt plus defaults, for example a "Popy episode" preset) are a later extension of the same registry.
 
 ## Handoff contract
 
@@ -65,3 +89,7 @@ Distinguish three requests:
 3. Modify Classic itself: a separate development task with code review and testing, not an unrestricted tool inside a production chat.
 
 A coding specialist is a later extension. It should not be required to complete the initial Popy workflow.
+
+## Runtime foundation
+
+The Director continues from tool results until the requested task is complete or needs input. Natural language, slash shortcuts and UI actions reach the same tools. Skills guide work; subagents can execute it; a defined project workspace supports writing/running code. See [09](09-agent-foundation.md) for the browser bridge, task history, delegation and code-execution boundaries. Domain phases describe capabilities, not a forced conversational state machine.
