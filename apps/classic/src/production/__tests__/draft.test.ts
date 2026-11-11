@@ -191,3 +191,40 @@ test("narrationText joins segments in order with single spaces", () => {
 	expect(narrationText(draft, ["n2", "n1"])).toBe("One day. Popy woke up.");
 	expect(narrationText(draft)).toBe(texts.join(" "));
 });
+
+test("validateDraft flags Scene-number and Scene-colon lines", () => {
+	for (const line of [
+		"Scene 4",
+		"scene 4 begins",
+		"Scene: Popy at the river",
+	]) {
+		const r = validateDraft({
+			...draft,
+			narration: [
+				{ ...draft.narration[0], text: line },
+				...draft.narration.slice(1),
+			],
+		});
+		expect(r).toEqual({
+			ok: false,
+			problems: [`Narration n1 contains a direction: ${line}`],
+		});
+	}
+});
+
+test("validateDraft does not flag ordinary sentences starting with Scene", () => {
+	for (const line of [
+		"Scenery rolled by.",
+		"Scenes of the village were lovely.",
+		"Scene by scene, the day went on.",
+	]) {
+		const r = validateDraft({
+			...draft,
+			narration: [
+				{ ...draft.narration[0], text: line },
+				...draft.narration.slice(1),
+			],
+		});
+		expect(r).toEqual({ ok: true });
+	}
+});

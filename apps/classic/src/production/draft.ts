@@ -3,7 +3,7 @@ import type { ProductionDraft, StaleReason, StoryScene } from "./contract";
 const REASON_ORDER: StaleReason[] = ["narration", "visual", "timing"];
 
 const DIRECTION_SPAN = /\[[^\]]*\]|\([^)]*\)/;
-const DIRECTION_LINE = /^\s*(scene|visual:|sfx:)/i;
+const DIRECTION_LINE = /^\s*(scene\s*(\d|:)|visual:|sfx:)/i;
 
 function markStale(scene: StoryScene, reasons: StaleReason[]): StoryScene {
 	const stale = REASON_ORDER.filter(
