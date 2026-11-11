@@ -27,12 +27,16 @@ Start with: read project/context; save production draft; read selected scenes; p
 
 A connector describes operations it actually supports: image generation/editing, video generation, TTS, search or rendering; input/reference kinds; aspect ratios and durations; authentication; estimate availability; asynchronous-job behavior; and result import needs. A model name does not establish all those capabilities.
 
+## Confirmed provider choices
+
+The initial Director providers are OpenAI and Anthropic. OpenArt MCP is the primary image and video generation route; verify which models/operations the connected account exposes. Grok/xAI is optional later. Narration remains on the selected existing voice route. See [document 10](10-openart-and-model-providers.md) for the connection, discovery and job/import plan. This supersedes direct-Gemini-first media assumptions.
+
 ## Integration priorities
 
 | Route | Planned role | Priority / proof |
 | --- | --- | --- |
-| Existing voice and image extensions | First narration and illustrations | Prove one selected route end to end before adding another |
-| OpenArt MCP | Additional image/video/editing operations exposed to the account | Discover current schemas, run an authorized sample, bind output to one scene |
+| Existing voice extensions; optional direct image routes | Narration, plus manually usable/alternate image tools | Keep existing modules; initial agent images use OpenArt |
+| OpenArt MCP | Primary image and video generation; image editing where supported | Include in the runtime connector foundation; discover schemas/models, then prove scene-bound generation/import |
 | HyperFrames | Project graphics, motion slides, overlays and reusable effects | Keep earlier engine direction; prove a render imports and matches preview |
 | Local media analysis | Frames, transcripts, audio/mix measurements and scene review | Give editing/review specialists actual media evidence |
 | Stock/music/SFX connectors | Search existing resources before generating unnecessarily | Show source and per-asset usage/attribution information |

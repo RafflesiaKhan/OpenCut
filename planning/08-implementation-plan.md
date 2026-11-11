@@ -8,7 +8,7 @@ Written 11 November 2026 · branch `director-agents-phases` · status: earlier c
 
 **Architecture:** The production module retains domain state and pure operations. A continuing Director runtime chooses tools, observes results and can delegate to specialist loops. A browser bridge executes Classic commands; MCP and code tools run in the appropriate local runtime. See document 09 for the controlling architecture. The remaining task details below are candidate domain work and must be reconciled before execution.
 
-**Tech stack:** Next.js + React (Classic), TypeScript, zod, `bun:test`, Biome, IndexedDB/OPFS through the existing `StorageService`, existing Gemini TTS / Gemini image helpers. Prototype: one self-contained HTML file.
+**Tech stack:** Next.js + React (Classic), TypeScript, zod, `bun:test`, Biome, IndexedDB/OPFS through the existing `StorageService`, existing voice helpers; primary agent image/video route is OpenArt MCP (document 10). Prototype: one self-contained HTML file.
 
 **Spec:** `planning/README.md` and documents 01–07 in the same folder. Executors read the owning document named in each milestone before starting it.
 
@@ -41,7 +41,7 @@ These are my choices where document 07 leaves a decision open. Each is replaceab
 | D07 | Superseded by document 09: continuing tool loop, real delegated specialist execution and browser bridge. Runtime/SDK selection remains open | Tasks 9, 24 |
 | D08 | Production data lives in an optional `production` field on `TProject`; series live in their own IndexedDB store; backup is a JSON export | Tasks 7, 8 |
 | D10, D12 | Each batch is authorized explicitly; every Director edit is a reviewed proposal | Tasks 15, 19, 23 |
-| First routes | Voice: `generateSpeech` in `src/ai-voice/gemini-tts.ts`. Images: `requestGeminiImage` in `src/ai-image/gemini-image.ts` | Creator may swap before Tasks 17 and 20 |
+| First routes | Director: OpenAI/Anthropic. Images and video: OpenArt MCP. Voice: creator-selected existing extension. Grok optional later | Document 10 supersedes the earlier direct-Gemini image default |
 
 ## Review focus
 
@@ -608,7 +608,9 @@ test("cancel only affects jobs not yet submitted", () => {
 - [ ] **Step 2:** Run → fail. **Step 3:** Implement; set `productionSchema.jobs` to `z.array(generationJobSchema)`. For a synchronous provider (Gemini image) `nextAction` on `unknown` is `"none"` and the UI offers "Check provider, then retry" as an explicit creator action.
 - [ ] **Step 4:** Pass. **Step 5:** Commit `feat(production): generation job lifecycle`.
 
-### Task 20: Scene image generation and batch runner
+### Task 20: Scene image generation and batch runner (OpenArt redesign required)
+
+> **Superseded route:** The Gemini-specific interfaces/steps below are historical candidate work, not the initial route to execute. Re-plan this task using OpenArt MCP discovery, selected model forms and durable job/import handling from document 10. Preserve scene-bound batches and candidate acceptance.
 
 **Files:** Create `src/production/images.ts`, `src/production/__tests__/images.test.ts`; Modify `src/image-batcher/components/assets-view.tsx:517-536`
 
@@ -660,7 +662,7 @@ test("accepting scene 2 leaves scenes 1 and 3, narration and timing untouched", 
 - [ ] **Step 5: Verify** with go-ahead for a 3-scene batch plus one regeneration: reject scene 2, regenerate it alone, accept; switch projects mid-batch and confirm the result lands in the original project after reopening.
 - [ ] **Step 6:** Commit `feat(production): candidate review and acceptance`. Record the trial in document 07.
 
-OpenArt (document 05) is not needed for this proof. Run its document-07 experiment afterwards as a separate plan; the job model above already has `providerJobId` and `poll` for asynchronous providers.
+OpenArt MCP is now the primary image/video route (document 10), so its discovery and scene-bound generation/import trial precedes this proof. The job model must support returned provider identifiers, asynchronous completion and reconnect/reconciliation.
 
 ---
 
@@ -744,7 +746,7 @@ reviewCut(args: { draft: ProductionDraft; clips: DirectorProject["clips"]; capti
 
 ## Later (not planned in detail)
 
-Stickman/doodle styles, generated motion clips, HyperFrames graphics, OpenArt, stock/music connectors, media-analysis review, packaging and publishing. Each gets its own experiment from document 07 and its own plan once P7 is proven. A 15-minute explainer is a target for that stage, not for this plan.
+Stickman/doodle styles, advanced motion workflows, HyperFrames graphics, additional stock/music connectors, media-analysis review, packaging and publishing. Each gets its own experiment from document 07 and its own plan once P7 is proven. A 15-minute explainer is a target for that stage, not for this plan.
 
 ## Coverage check against the spec
 

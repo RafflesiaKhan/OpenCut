@@ -9,7 +9,8 @@ Status: proposed order; no implementation dates or completion promises
 - Use specialist agents incrementally, coordinated through one Director.
 - Save series assets, characters, visual/editing style and narration choices for reuse.
 - Create a structured narration-linked scene plan, then populate editable timeline placeholders.
-- Reuse existing voice/image extensions and add selected connectors such as OpenArt.
+- Reuse existing voice extensions. Use OpenArt MCP as the primary image/video generation route; retain direct image extensions as optional alternatives.
+- Initial Director providers: OpenAI and Anthropic. Grok/xAI is available as an optional later addition, not an initial requirement.
 - Generate in batches, regenerate individual scenes, preserve accepted work.
 - Add subtitles, transitions, restrained image motion, quiet music and meaningful SFX through manual controls or agents.
 - Keep future project-specific code generation and additional integrations in view.
@@ -62,6 +63,7 @@ Experiments involving paid generation require a concrete selected route and auth
 | D07 | Agent runtime and model selection | Continuing tool-using runtime, skills, real specialist loops and project-scoped code tools are required; SDK and transport remain open. See document 09 |
 | D08 | Storage and backup | Reuse existing browser storage where practical; choose project export/backup and local-service file bridge |
 | D09 | Grouping extension tabs | Preserve current UI until mock tests show whether Create/Libraries/Brand grouping is clearer |
+| D14 | Initial providers / media MCP | **Decided 11 Nov 2026:** OpenAI + Anthropic for Director; OpenArt MCP for images/video; Grok optional later. Voice route remains separately selected; see document 10 |
 | D10 | Generation budget and automation scope | Batch authorization, visible estimates, selected-model fidelity and bounded retries |
 | D11 | External reuse | Stickman sample candidate; OpenMontage architecture reference; MrPaidSocial permissions unresolved |
 | D12 | Editing autonomy | Review a proposed batch initially; later define clearly bounded routine operations from user preference |

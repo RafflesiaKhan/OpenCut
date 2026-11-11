@@ -19,6 +19,7 @@ The creator can perform an operation manually or ask the Director to perform the
 | [07 · Milestones and decisions](07-milestones-and-decisions.md) | What do we design/test next, and what remains unresolved? |
 | [08 · Earlier implementation checklist](08-implementation-plan.md) | Which domain tasks can be retained after the runtime redesign? |
 | [09 · Agent foundation](09-agent-foundation.md) | How does the conversational agent execute, delegate and use code tools? |
+| [10 · OpenArt and model providers](10-openart-and-model-providers.md) | Which providers power reasoning, images, video and MCP tools? |
 
 **Suggested reading:** 09 → 02 → 07. Document 09 owns the current runtime direction and overrides conflicting runtime assumptions in 08. The other documents provide implementation and research detail when needed.
 

@@ -23,6 +23,10 @@ We are refining the HTML and this plan together before implementing the runtime.
 
 The HTML uses fixed intent matching and scripted activity/results. Coloured cards are visual stand-ins, the narrator is explicitly fictional, and no text/audio/images are sent to a provider. The default demonstration succeeds; failure exploration is optional.
 
+## Initial providers and MCP
+
+OpenAI and Anthropic APIs power Director reasoning/tool use. OpenArt MCP is the primary image/video generation connection and belongs in the connector foundation. Additional MCPs remain possible; Grok/xAI is optional later. Narration retains the creator-selected voice extension. See [document 10](10-openart-and-model-providers.md). Model access and operations are discovered/verified, not assumed.
+
 ## Runtime architecture
 
 ```mermaid
@@ -84,7 +88,7 @@ Project scripts, custom animations and reusable project tools belong in this cap
 | F3 | Persistent tasks and cancellation | Reload/disconnect does not duplicate an edit or restart a paid action; stopped tasks retain accurate history |
 | F4 | Skills and one real specialist | A direction task runs in a child loop, uses scoped tools and returns a draft to the Director |
 | F5 | Project coding capability | Write/run a small project artifact, inspect output and import it through the normal media route |
-| Production expansion | Voice, illustrations, editing and more MCP routes | Add document 08's relevant tasks behind this same runtime, one complete loop at a time |
+| Production expansion | Voice, OpenArt image/video generation, editing and additional MCP routes | Add document 08's relevant tasks behind this same runtime, one complete loop at a time |
 
 Choose the runtime/SDK through a small tool-call + browser-bridge trial, not by copying a full coding CLI. The inspected local OpenClaude/claude-o trees illustrate patterns; they are not installed dependencies. OpenClaude's local LICENSE contains an explicit proprietary-derived-source notice, so copying source is not assumed permitted.
 
